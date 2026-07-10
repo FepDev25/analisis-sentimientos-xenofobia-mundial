@@ -1,0 +1,36 @@
+# Estrategia de búsqueda (Capa A — Evento). Ver ESTRATEGIA_BUSQUEDA.md.
+# Editable por el equipo sin tocar código. El léxico (Capa B) va en lexico.txt.
+
+[ventana]
+# Ventana temporal de recolección (ISO 8601). El filtrado por fecha se hace
+# del lado cliente porque no todas las redes lo permiten en la búsqueda.
+inicio = "2026-05-11"      # capa previa (buildup)
+fin    = "2026-07-19"      # final del torneo
+
+# Hashtags de torneo (búsqueda global en X y TikTok).
+hashtags_torneo = ["#WorldCup2026", "#FIFAWorldCup", "#Mundial2026", "#WC26"]
+
+# Hashtags de partido: código FIFA de 3 letras por selección.
+hashtags_partido = ["#ARGMEX", "#BRAJPN", "#FRAESP", "#ECUURU", "#MEXARG"]
+
+# Selecciones (multiidioma) que suelen concentrar carga xenófoba.
+selecciones = ["Brasil", "Brazil", "Japón", "Japan", "Argentina",
+               "México", "Mexico", "Francia", "France", "Ecuador", "Uruguay"]
+
+# Jugadores mediáticos (generan alto tráfico).
+jugadores = ["Mbappé", "Messi", "Vinicius"]
+
+[youtube]
+# Alcance por canal/video: canales oficiales de resúmenes de goles.
+# Rellenar con los IDs o handles de los canales objetivo.
+canales = []               # ej. ["@FIFA", "@ESPNDeportes"]
+videos  = []               # ej. IDs de videos concretos de resúmenes
+
+[reddit]
+# Respaldo de X: búsqueda por subreddit.
+subreddits = ["soccer", "worldcup", "argentina", "brasil", "ecuador"]
+
+[limites]
+# Topes para no dispararse en volumen durante las pruebas.
+max_por_criterio = 200     # comentarios/posts por cada query
+max_total_por_red = 2000

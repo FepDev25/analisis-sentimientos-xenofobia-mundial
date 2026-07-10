@@ -1,0 +1,16 @@
+# Datos extraídos (solo se versiona una muestra en evidencia/)
+/data/*
+!/data/.gitkeep
+
+# Credenciales
+.env
+
+# Entorno / uv
+.venv/
+__pycache__/
+*.pyc
+
+# Editor / SO
+.vscode/
+.idea/
+.DS_Store

@@ -1,0 +1,15 @@
+# Léxico xenófobo semilla
+# Una entrada por línea. Se cruza con la Capa A (evento) para formar las
+# búsquedas "dirigidas". Los 3 integrantes nutren este archivo con lo observado en campo. Las líneas que empiezan con # se ignoran.
+
+# ⚠️ Contenido ofensivo por naturaleza del estudio (detección de hate speech).
+#    Se documenta como parte de la metodología, no como respaldo del mismo.
+#
+# Marcadores por color de piel / cultura (ejemplos de campo)
+monos
+monkey
+chimpancés
+chimpance
+# Emojis usados en clave racista
+🍌
+🐒

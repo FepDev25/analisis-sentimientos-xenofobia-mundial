@@ -1,0 +1,17 @@
+[project]
+name = "extractor-mundial"
+version = "0.1.0"
+description = "Extracción paralela de datos sobre xenofobia en el Mundial FIFA 2026 (Práctica 6 - Computación Paralela)"
+readme = "README.md"
+authors = [
+    { name = "Felipe", email = "lamediatricolor@gmail.com" }
+]
+requires-python = ">=3.14"
+dependencies = []
+
+[project.scripts]
+extractor-mundial = "extractor_mundial:main"
+
+[build-system]
+requires = ["uv_build>=0.11.28,<0.12.0"]
+build-backend = "uv_build"
