@@ -1,0 +1,28 @@
+Identificar una problemática en el análisis de sentimientos
+
+análisis de sentimientos -> encontrar emocion, sentimiento en texto
+modelo supervisado o no supervisado
+tradicional: positivo, negeativo, neutral o felicidad, tristeza etc
+
+ej: deteccion de cyberacoso en redes sociales
+ 
+Practica 1: extraccion de data de redes sociales. Redes como facebook, tik tok, instagram, x
+identificar problematica de la data que hay en la red social que usaremos
+requisito: 3 redes sociales
+requests o  selenium, playwright 
+construir los scrappers - crawlers para poder obtener la data
+para el lunes
+en base a la problematica - mando a buscar - me saca los comentarios, esto debe ser concurrente, mandar las 3 redes a la vez
+csv, txt etc por ahora
+
+Practica 2:
+Buscar un modelo que me permita clasificar los sentimientos segun la problematica
+ml supervisado, no supervisados, redes neuronales, LLMs
+
+
+Proyecto final:
+Meter todo en una plataforma, web, dashboard etc, con estadisticas del analisis de sentimientos
+Ademas:
+Articulo academico con todo el proceso
+
+    
