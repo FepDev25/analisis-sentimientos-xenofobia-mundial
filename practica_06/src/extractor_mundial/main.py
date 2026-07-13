@@ -12,7 +12,7 @@ from .extractores import EXTRACTORES_POR_DEFECTO
 from .orquestador import ResultadoRed, ejecutar
 
 
-def _reporte(resultados: list[ResultadoRed], guardados: int) -> None:
+def _reporte(resultados: list[ResultadoRed], almacen: Almacen) -> None:
     print("\n=== Resultado de la extracción paralela ===")
     for r in resultados:
         estado = f"{r.total} registros" if not r.error else f"⚠ {r.error}"
@@ -20,7 +20,10 @@ def _reporte(resultados: list[ResultadoRed], guardados: int) -> None:
     if resultados:
         print(f"\nTiempo total (los {len(resultados)} en paralelo): "
               f"{resultados[0].duracion_s:.2f}s")
-    print(f"Guardados (sin duplicados): {guardados}")
+    print(
+        f"Nuevos en esta corrida: {almacen.nuevos}  |  "
+        f"previos: {almacen.previos}  |  total acumulado: {almacen.total}"
+    )
 
 
 def main() -> None:
@@ -28,10 +31,18 @@ def main() -> None:
     extractores = [Extractor(config) for Extractor in EXTRACTORES_POR_DEFECTO]
 
     almacen = Almacen(DIR_DATA)
-    resultados = ejecutar(extractores, consumir=almacen.agregar)
+    resultados: list[ResultadoRed] = []
+    try:
+        resultados = ejecutar(extractores, consumir=almacen.agregar)
+    except KeyboardInterrupt:
+        print("\n Interrumpido: los datos ya están en dataset.jsonl "
+              "regenerando CSV/JSON con lo recolectado...")
+    finally:
+        # dataset.jsonl ya es durable; aquí se (re)generan las vistas CSV/JSON.
+        rutas = almacen.volcar()
+        almacen.cerrar()
 
-    rutas = almacen.volcar()
-    _reporte(resultados, almacen.total)
+    _reporte(resultados, almacen)
     print("\nArchivos generados:")
     for ruta in rutas:
         print(f"  - {ruta}")
