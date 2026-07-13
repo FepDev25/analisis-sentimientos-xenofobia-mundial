@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.14"
 dependencies = [
     "pandas>=3.0.3",
+    "requests>=2.34.2",
     "youtube-comment-downloader>=0.1.78",
     "yt-dlp>=2026.7.4",
 ]
