@@ -6,8 +6,10 @@ import json
 from dataclasses import asdict, dataclass, field
 from datetime import datetime, timezone
 
-# Valores permitidos
-REDES = ("x", "tiktok", "youtube", "reddit")
+# Valores permitidos.
+# `reddit` se conserva por trazabilidad histórica: se descartó como fuente en
+# jul-2026 al confirmar que su API responde 403 al acceso programático.
+REDES = ("x", "tiktok", "youtube", "reddit", "bluesky")
 ESTRATEGIAS = ("amplia", "dirigida")
 
 # Orden de columnas para el CSV.
