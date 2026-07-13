@@ -28,10 +28,13 @@ class Config:
     jugadores: list[str]
     canales_youtube: list[str]
     videos_youtube: list[str]
+    playlists_youtube: list[str]
     subreddits: list[str]
     lexico: list[str]
     max_por_criterio: int
     max_total_por_red: int
+    max_videos: int          # videos por corrida (tandas); evita throttle
+    pausa_youtube: float     # segundos de pausa entre videos
 
     # Términos "evento" combinados
     @property
@@ -59,14 +62,15 @@ class Config:
     def todos_los_criterios(self) -> list[Criterio]:
         return self.criterios_amplia() + self.criterios_dirigida()
 
-# Lee el léxico ignorando comentarios (#) y líneas vacías
+# Lee el léxico ignorando comentarios y líneas vacías. Soporta comentarios de
+# línea (# ...) y también INLINE (`termino  # nota`): se corta en el primer '#',
 def _cargar_lexico(ruta: Path) -> list[str]:
     if not ruta.exists():
         return []
     entradas = []
     for linea in ruta.read_text(encoding="utf-8").splitlines():
-        linea = linea.strip()
-        if linea and not linea.startswith("#"):
+        linea = linea.split("#", 1)[0].strip()
+        if linea:
             entradas.append(linea)
     return entradas
 
@@ -94,8 +98,11 @@ def cargar_config(
         jugadores=v.get("jugadores", []),
         canales_youtube=yt.get("canales", []),
         videos_youtube=yt.get("videos", []),
+        playlists_youtube=yt.get("playlists", []),
         subreddits=rd.get("subreddits", []),
         lexico=_cargar_lexico(ruta_lexico),
         max_por_criterio=lim.get("max_por_criterio", 200),
         max_total_por_red=lim.get("max_total_por_red", 2000),
+        max_videos=lim.get("max_videos", 30),
+        pausa_youtube=yt.get("pausa_videos", 2.0),
     )
