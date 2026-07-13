@@ -53,17 +53,26 @@ class Config:
         """baseline de volumen."""
         return [Criterio(q, "amplia") for q in self.terminos_evento]
 
+    # Base del cruce dirigido: SIN hashtags, a propósito.
+    # Medido el 13-jul-2026 en Bluesky: `#WorldCup2026 monos` devuelve 0 resultados,
+    # mientras que `Brasil monos` sí trae. Tiene sentido — nadie escribe un insulto
+    # racista y encima le pone el hashtag oficial del torneo. Cruzar hashtags con el
+    # léxico solo quema presupuesto de consultas.
+    @property
+    def terminos_dirigida(self) -> list[str]:
+        return [*self.selecciones, *self.jugadores]
+
     def criterios_dirigida(self) -> list[Criterio]:
         """subconjunto denso (evento + término peyorativo).
 
-        El producto cartesiano completo son miles de consultas (24 eventos × ~100
+        El producto cartesiano completo son miles de consultas (~15 eventos × ~100
         términos), inviable en una corrida. Se INTERCALA por término del léxico en
         vez de agotar evento por evento: así, al cortar en `max_criterios_dirigida`,
         el recorte sigue cubriendo TODOS los eventos y no solo los primeros.
         """
         criterios = []
         for termino in self.lexico:
-            for evento in self.terminos_evento:
+            for evento in self.terminos_dirigida:
                 criterios.append(Criterio(f"{evento} {termino}", "dirigida"))
         return criterios[: self.max_criterios_dirigida]
 
