@@ -7,7 +7,11 @@ authors = [
     { name = "Felipe", email = "lamediatricolor@gmail.com" }
 ]
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "pandas>=3.0.3",
+    "youtube-comment-downloader>=0.1.78",
+    "yt-dlp>=2026.7.4",
+]
 
 [project.scripts]
 extractor-mundial = "extractor_mundial:main"
