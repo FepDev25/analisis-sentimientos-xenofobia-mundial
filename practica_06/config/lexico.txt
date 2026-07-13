@@ -1,15 +1,149 @@
-# Léxico xenófobo semilla
-# Una entrada por línea. Se cruza con la Capa A (evento) para formar las
-# búsquedas "dirigidas". Los 3 integrantes nutren este archivo con lo observado en campo. Las líneas que empiezan con # se ignoran.
+# Léxico xenófobo. Una entrada por línea
 
 # ⚠️ Contenido ofensivo por naturaleza del estudio (detección de hate speech).
-#    Se documenta como parte de la metodología, no como respaldo del mismo.
+#    Se documenta como metodología, NO como respaldo del mismo.
 #
-# Marcadores por color de piel / cultura (ejemplos de campo)
+# ============================================================
+# 1. Insultos raciales / por color de piel
+# ============================================================
 monos
 monkey
+macaco
+macacos
+simio
+simios
+gorila
 chimpancés
 chimpance
-# Emojis usados en clave racista
-🍌
+prieto
+beur
+nègre
+singe
+negroide
+negro de mierda
+cafuso
+cafusa
+zambo
+ojos rasgados
+slant eyes
+n!gger
+n*gga
+
+# ============================================================
+# 2. Gentilicios / apodos usados como insulto
+# ============================================================
+sudaca
+sudacas
+Meximonos
+puto argentino
+argentino puto
+brasileño puto
+mexicano de mierda
+ecuatoriano de mierda
+uruguayo de mierda
+francés de mierda
+boliviano de mierda
+latino de mierda
+europeo de mierda
+gringo de mierda
+guayaco de mierda
+argie
+beaner
+wetback
+frogs
+
+# ============================================================
+# 3. Emojis y combinaciones en clave racista/xenófoba
+# ============================================================
 🐒
+🐵
+🦍
+🍌
+🍉
+👳
+🐒🍌
+🦍🍌
+🐒🇧🇷
+🐵🇦🇷
+🦍🇫🇷
+🍌🇲🇽
+🇯🇵🐒
+
+# ============================================================
+# 4. Hate implícito / humor codificado / dog whistles (frases)
+# ============================================================
+Africa won
+Africa won the World Cup
+France is not Africa
+juegan como monos
+estos sudacas
+el equipo de África
+mejor equipo de África
+equipo africano ganó
+no son franceses de verdad
+no son franceses reales
+sudamericanos inferiores
+diversidad importada
+11 negros
+genética superior
+vuelvan a África
+sin alma asiática
+roban porque son indios
+mejor sin los monos
+nutrientes de la comida se les fue a sus penes y por eso no tienen nada en la cabeza
+
+# ============================================================
+# 5. Evasiones ortográficas / leetspeak (codifican un slur real)
+# ============================================================
+m0n0
+n3gr0
+m.o.n.o
+n.e.g.r.o
+m4c4c0
+m0n0n3ur0n4l3s
+sud@ca
+s ud4c4
+m*erda sud4ca
+j4p0
+b34n3r
+w3tb4ck
+fr0gs
+n3gr01d3
+put4 arg3nt1n4
+p u t 0  a r g e n t i n 0
+
+# ============================================================
+# APARCADOS — NO activar tal cual (inflarían falsos positivos).
+# Para reactivarlos hace falta matching por LÍMITE DE PALABRA (rescata a los
+# "substring-inseguros") y/o contexto en la Práctica 7 (los "ambiguos").
+# ============================================================
+#
+# -- Substring-inseguros (matchean dentro de palabras inocentes) --
+# mono        (dentro de: demonio, armonioso)
+# japo        (dentro de: japonés)
+# jap         (dentro de: Japón, japonés)
+# moro        (dentro de: amoroso, moroso)
+# nip         (dentro de: nipón, snipe)
+# ape         (dentro de: escape, grape, shape)
+# spic        (dentro de: spicy, conspicuo)
+#
+# -- Ambiguos semánticos (neutros en la mayoría de usos) --
+# negro       (color / uso afectivo)
+# chino       (dentro de cochino; también apodo/gentilicio neutro)
+# indio       (gentilicio/apodo neutro)
+# amarillo    (color de camiseta: Brasil, Ecuador)
+# yellow      (idem)
+# gaucho      (gentilicio neutro)
+# boludo      (muletilla casual, Argentina)
+# pancho      (nombre propio / comida)
+# gringo      (a menudo neutro/afectivo)
+# africano    (neutro salvo en frase-consigna)
+# charrua     (apodo neutro de Uruguay)
+# guarani     (etnia/idioma neutro)
+# andino      (gentilicio neutro)
+# montuvio    (grupo etnico neutro, Ecuador)
+# ilegal      (muy dependiente de contexto: migracion)
+# indocumentado
+#
+# -- Profanidad generica (toxicidad, NO xenofobia: inflaria la metrica) --
+# puto / p*to / put0 / m*erda / pendejo / p3nd3j0 / hijo de puta / h1j0d3put4
