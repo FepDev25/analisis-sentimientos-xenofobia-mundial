@@ -23,6 +23,7 @@ from .almacenamiento import Almacen
 from .config import DIR_DATA, cargar_config
 from .extractores import EXTRACTORES_POR_DEFECTO
 from .orquestador import ResultadoRed, ejecutar
+from .remarcado import remarcar
 
 
 # Deja constancia EN LA SALIDA de que corremos sin GIL: la captura de la ejecución
@@ -73,7 +74,30 @@ def _argumentos() -> argparse.Namespace:
         help="sobrescribe el tope de config/busqueda.toml. Útil para la corrida "
              "corta de evidencia.",
     )
+    p.add_argument(
+        "--remarcar",
+        action="store_true",
+        help="recalcula el campo 'estrategia' del dataset ya extraído con el léxico "
+             "actual y sale. No pide nada a la red: úsalo tras tocar lexico.txt.",
+    )
     return p.parse_args()
+
+
+def _solo_remarcar(config) -> None:
+    almacen = Almacen(DIR_DATA)
+    almacen.cerrar()  # el re-marcado reescribe el jsonl: no dejarlo abierto
+    total, dirigidas, cambiados = remarcar(DIR_DATA, config)
+    if not total:
+        print("No hay dataset.jsonl que re-marcar.")
+        return
+    pct = dirigidas / total * 100
+    print(f"Re-marcado con el léxico actual ({len(config.lexico)} términos):")
+    print(f"  registros : {total}")
+    print(f"  dirigida  : {dirigidas}  ({pct:.1f}%)")
+    print(f"  cambiados : {cambiados}")
+    # Regenerar las vistas CSV/JSON desde el jsonl ya corregido.
+    for ruta in Almacen(DIR_DATA).volcar():
+        print(f"  - {ruta.name}")
 
 
 def main() -> None:
@@ -81,6 +105,10 @@ def main() -> None:
     _banner_entorno()
 
     config = cargar_config()
+    if args.remarcar:
+        _solo_remarcar(config)
+        return
+
     if args.max_por_criterio is not None:
         config.max_por_criterio = args.max_por_criterio
 
