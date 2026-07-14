@@ -1,10 +1,19 @@
-# Léxico xenófobo. Una entrada por línea
-
+# Léxico xenófobo. Una entrada por línea.
+#
 # ⚠️ Contenido ofensivo por naturaleza del estudio (detección de hate speech).
 #    Se documenta como metodología, NO como respaldo del mismo.
 #
+# FORMATO (lo lee src/extractor_mundial/lexico.py, mismo marcado que el AED):
+#   · "# EJE: <nombre>"  fija el eje temático de las entradas que siguen.
+#   · un término por línea; substring en minúsculas por defecto (captura
+#     portmanteaus: meximonos, mexisimio, latinsimio).
+#   · flag inline "# exacto" → match por LÍMITE DE PALABRA (evita falsos
+#     positivos: prieto⊂aprietos, singe⊂Kissinger, beur⊂bEuropeo).
+#   · las menciones @usuario se descartan antes de marcar (no son contenido).
+
 # ============================================================
-# 1. Insultos raciales / por color de piel
+# EJE: anti-negro / simiesco   (animalización racista; blanco: Brasil/Vinícius,
+#      selecciones africanas y jugadores negros de selecciones europeas)
 # ============================================================
 monos
 monkey
@@ -15,107 +24,134 @@ simios
 gorila
 chimpancés
 chimpance
-prieto
-beur
+prieto        # exacto  (evita 'aprietos' y el apellido Prieto)
+prietos       # exacto
+zambo
 nègre
-singe
+singe         # exacto  (evita 'Kissinger')
 negroide
 negro de mierda
 cafuso
 cafusa
-zambo
-ojos rasgados
-slant eyes
 n!gger
 n*gga
-
-# ============================================================
-# 2. Gentilicios / apodos usados como insulto
-# ============================================================
-sudaca
-sudacas
-Meximonos
-puto argentino
-argentino puto
-brasileño puto
-mexicano de mierda
-ecuatoriano de mierda
-uruguayo de mierda
-francés de mierda
-boliviano de mierda
-latino de mierda
-europeo de mierda
-gringo de mierda
-guayaco de mierda
-argie
-beaner
-wetback
-frogs
-
-# ============================================================
-# 3. Emojis y combinaciones en clave racista/xenófoba
-# ============================================================
+# — emojis (la animalización es el vehículo, el blanco varía por bandera) —
 🐒
 🐵
 🦍
 🍌
 🍉
-👳
 🐒🍌
 🦍🍌
 🐒🇧🇷
 🐵🇦🇷
 🦍🇫🇷
-🍌🇲🇽
-🇯🇵🐒
-
-# ============================================================
-# 4. Hate implícito / humor codificado / dog whistles (frases)
-# ============================================================
-Africa won
-Africa won the World Cup
-France is not Africa
-juegan como monos
-estos sudacas
-el equipo de África
-mejor equipo de África
-equipo africano ganó
-no son franceses de verdad
-no son franceses reales
-sudamericanos inferiores
-diversidad importada
-11 negros
-genética superior
-vuelvan a África
-sin alma asiática
-roban porque son indios
-mejor sin los monos
-nutrientes de la comida se les fue a sus penes y por eso no tienen nada en la cabeza
-
-# ============================================================
-# 5. Evasiones ortográficas / leetspeak (codifican un slur real)
-# ============================================================
+# — evasiones ortográficas / leetspeak de un slur real —
 m0n0
 n3gr0
 m.o.n.o
 n.e.g.r.o
 m4c4c0
 m0n0n3ur0n4l3s
+n3gr01d3
+# — frases —
+juegan como monos
+mejor sin los monos
+11 negros
+genética superior
+nutrientes de la comida se les fue a sus penes y por eso no tienen nada en la cabeza
+
+# ============================================================
+# EJE: anti-mexicano / migrante   (tropo del muro fronterizo y la migración;
+#      blanco: México, envalentonado por el contexto ICE/deportaciones 2026)
+# ============================================================
+Meximonos
+mexicano de mierda
+saltamuros
+salta muros
+trepamuros
+trepa muros
+brincamuros
+saltabardas
+salta bardas
+frijolero
+frijoleros
+muevecoches
+mueve coches
+beaner
+wetback
+b34n3r
+w3tb4ck
+🍌🇲🇽
+
+# ============================================================
+# EJE: sudamericano / regional   (gentilicio-insulto entre países del sur)
+# ============================================================
+sudaca
+sudacas
+argie
+puto argentino
+argentino puto
+brasileño puto
+boliviano de mierda
+ecuatoriano de mierda
+uruguayo de mierda
+guayaco de mierda
+latino de mierda
+sudamericanos inferiores
+estos sudacas
+# — leet —
 sud@ca
 s ud4c4
 m*erda sud4ca
-j4p0
-b34n3r
-w3tb4ck
-fr0gs
-n3gr01d3
 put4 arg3nt1n4
 p u t 0  a r g e n t i n 0
 
 # ============================================================
+# EJE: colonial / autenticidad   (negar la pertenencia nacional del jugador
+#      racializado; blanco: Francia, "no son franceses de verdad")
+# ============================================================
+no son franceses de verdad
+no son franceses reales
+beur          # exacto  (evita 'bEuropeo'; magrebí en Francia)
+France is not Africa
+Africa won
+Africa won the World Cup
+el equipo de África
+mejor equipo de África
+equipo africano ganó
+diversidad importada
+vuelvan a África
+colonizado
+colonizada
+colonizados
+
+# ============================================================
+# EJE: anti-asiático
+# ============================================================
+ojos rasgados
+slant eyes
+sin alma asiática
+j4p0
+🇯🇵🐒
+
+# ============================================================
+# EJE: otros / genérico
+# ============================================================
+francés de mierda
+europeo de mierda
+gringo de mierda
+frogs
+fr0gs
+roban porque son indios
+👳
+
+# ============================================================
 # APARCADOS — NO activar tal cual (inflarían falsos positivos).
-# Para reactivarlos hace falta matching por LÍMITE DE PALABRA (rescata a los
-# "substring-inseguros") y/o contexto en la Práctica 7 (los "ambiguos").
+# Con el matching por límite de palabra ya disponible (flag "# exacto") algunos
+# "substring-inseguros" podrían rescatarse; se dejan aparcados porque siguen
+# siendo ambiguos SEMÁNTICAMENTE (negro=color, chino=apodo) → tarea del modelo
+# de la Práctica 7, no del filtro de recall.
 # ============================================================
 #
 # -- Substring-inseguros (matchean dentro de palabras inocentes) --
@@ -142,6 +178,7 @@ p u t 0  a r g e n t i n 0
 # guarani     (etnia/idioma neutro)
 # andino      (gentilicio neutro)
 # montuvio    (grupo etnico neutro, Ecuador)
+# colono      (dentro de: colonia; muy ambiguo)
 # ilegal      (muy dependiente de contexto: migracion)
 # indocumentado
 #
