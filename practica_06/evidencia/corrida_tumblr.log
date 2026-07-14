@@ -1,0 +1,17 @@
+=== Entorno ===
+  Python : 3.14.6  (free-threaded)
+  GIL    : DESACTIVADO — los hilos usan varios núcleos de verdad
+  Núcleos: 12
+
+Lanzando 1 extractor(es) en paralelo: tumblr
+
+=== Resultado de la extracción paralela ===
+  [  tumblr] 3770 registros  (365.06s)
+
+Tiempo total (los 1 en paralelo): 365.06s
+Nuevos en esta corrida: 3770  |  previos: 0  |  total acumulado: 3770
+
+Archivos generados:
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/tumblr.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/dataset.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/dataset.json

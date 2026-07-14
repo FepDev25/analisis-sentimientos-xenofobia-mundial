@@ -56,6 +56,7 @@ max_criterios_dirigida = 120
 max_por_criterio = 2000
 max_total_por_red = 1000000
 max_videos = 30
+<<<<<<< HEAD
 [x]
 # Extractor de X con Playwright (navegador logueado). Ver extractores/x.py.
 # La sesión se captura una vez: `uv run --group x python scripts/recoleccion_x.py --login`
@@ -66,3 +67,38 @@ headless = false
 scrolls_sin_avance = 5
 # Pausa (s) entre queries, anti-throttle.
 pausa = 2.0
+=======
+
+[tumblr]
+# Tumblr busca por etiquetas, no por consultas de texto libre.
+# Se combinan etiquetas directamente relacionadas con discriminación
+# y etiquetas futbolísticas de alto volumen.
+etiquetas = [
+  "racismo",
+  "racism",
+  "xenophobia",
+  "xenofobia",
+  "football racism",
+  "racial abuse",
+  "racist football",
+  "anti racism",
+  "world cup",
+  "world cup 2026",
+  "fifa world cup",
+  "mundial 2026",
+  "football",
+  "futbol",
+  "futebol",
+  "soccer",
+  "Mbappe",
+  "Messi",
+  "Vinicius",
+  "Argentina",
+  "Brasil",
+  "Brazil",
+  "Mexico",
+  "France",
+  "Japan",
+  "Morocco"
+]
+>>>>>>> e8194a1 (extractores de Tumblr y Twitch)

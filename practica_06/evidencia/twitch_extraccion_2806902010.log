@@ -1,0 +1,18 @@
+=== Entorno ===
+  Python : 3.14.6  (free-threaded)
+  GIL    : DESACTIVADO — los hilos usan varios núcleos de verdad
+  Núcleos: 12
+
+Lanzando 1 extractor(es) en paralelo: twitch
+
+=== Resultado de la extracción paralela ===
+  [  twitch] 65444 registros  (2.01s)
+
+Tiempo total (los 1 en paralelo): 2.01s
+Nuevos en esta corrida: 65444  |  previos: 3770  |  total acumulado: 69214
+
+Archivos generados:
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/tumblr.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/twitch.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/dataset.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/dataset.json

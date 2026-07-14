@@ -31,6 +31,7 @@ class Config:
     playlists_youtube: list[str]
     subreddits: list[str]
     idiomas_bluesky: list[str]
+    etiquetas_tumblr: list[str]
     max_criterios_dirigida: int   # tope del cruce evento × léxico (son miles)
     lexico: list[str]
     max_por_criterio: int
@@ -111,7 +112,11 @@ def cargar_config(
     yt = d.get("youtube", {})
     rd = d.get("reddit", {})
     bs = d.get("bluesky", {})
+<<<<<<< HEAD
     x = d.get("x", {})
+=======
+    tb = d.get("tumblr", {})
+>>>>>>> e8194a1 (extractores de Tumblr y Twitch)
     lim = d.get("limites", {})
 
     return Config(
@@ -126,6 +131,7 @@ def cargar_config(
         playlists_youtube=yt.get("playlists", []),
         subreddits=rd.get("subreddits", []),
         idiomas_bluesky=bs.get("idiomas", []),
+        etiquetas_tumblr=tb.get("etiquetas", []),
         max_criterios_dirigida=bs.get("max_criterios_dirigida", 120),
         lexico=_cargar_lexico(ruta_lexico),
         max_por_criterio=lim.get("max_por_criterio", 200),
