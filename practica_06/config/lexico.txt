@@ -40,7 +40,7 @@ n*gga
 🐵
 🦍
 🍌
-🍉
+👳
 🐒🍌
 🦍🍌
 🐒🇧🇷
@@ -153,6 +153,13 @@ roban porque son indios
 # siendo ambiguos SEMÁNTICAMENTE (negro=color, chino=apodo) → tarea del modelo
 # de la Práctica 7, no del filtro de recall.
 # ============================================================
+#
+# -- Retirados por MEDICIÓN, no por sospecha (13-jul-2026, corpus Bluesky) --
+# 🍉   Estaba como "emoji racista", pero en 2026 es abrumadoramente el símbolo de
+#     solidaridad con PALESTINA. En el corpus marcaba como xenófobos posts sobre
+#     el genocidio en Gaza (p. ej. uno sobre Javier Bardem), que no tienen nada que
+#     ver con xenofobia futbolera. No es ambiguo: en este contexto es sencillamente
+#     incorrecto, y contaminaba la métrica con contenido político no relacionado.
 #
 # -- Substring-inseguros (matchean dentro de palabras inocentes) --
 # mono        (dentro de: demonio, armonioso)

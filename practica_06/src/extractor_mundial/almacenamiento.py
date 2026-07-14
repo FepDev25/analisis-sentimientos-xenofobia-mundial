@@ -91,11 +91,17 @@ class Almacen:
             pass
 
     # Lee el jsonl tolerando una última línea truncada por un corte previo.
+    #
+    # OJO: se parte por "\n" y NO con splitlines(). splitlines() también corta por
+    # U+2028, U+2029 y U+0085, que son caracteres LEGALES dentro de un string JSON y
+    # que json.dumps(ensure_ascii=False) escribe sin escapar. Un post que los contenga
+    # (son frecuentes en texto pegado desde redes) se partiría en dos trozos, ninguno
+    # sería JSON válido, y el except de abajo lo descartaría EN SILENCIO.
     def _leer_jsonl(self) -> list[dict]:
         if not self._jsonl.exists():
             return []
         out: list[dict] = []
-        for linea in self._jsonl.read_text(encoding="utf-8").splitlines():
+        for linea in self._jsonl.read_text(encoding="utf-8").split("\n"):
             linea = linea.strip()
             if not linea:
                 continue

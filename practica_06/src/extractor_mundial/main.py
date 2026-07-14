@@ -1,15 +1,44 @@
 """Punto de entrada: lanza la extracción paralela y consolida el dataset.
 
 Uso:
-    uv run extractor-mundial
+    uv run --env-file .env extractor-mundial                    # las 3 redes en paralelo
+    uv run --env-file .env extractor-mundial --redes bluesky    # solo una (recolección)
+    uv run --env-file .env extractor-mundial --max-por-criterio 50
+
+Hay dos tipos de corrida y conviene no mezclarlos:
+  - RECOLECCIÓN: cada integrante corre SU red (`--redes`), en su máquina y por tandas.
+    Los `dataset.jsonl` de cada uno se concatenan al final: el almacén deduplica por
+    (red, id), así que juntarlos es simplemente pegar los archivos.
+  - EVIDENCIA: una corrida de las 3 redes a la vez, con topes bajos, para demostrar
+    la ejecución concurrente. Es la que se guarda en `evidencia/`.
 """
 
 from __future__ import annotations
+
+import argparse
+import os
+import sys
 
 from .almacenamiento import Almacen
 from .config import DIR_DATA, cargar_config
 from .extractores import EXTRACTORES_POR_DEFECTO
 from .orquestador import ResultadoRed, ejecutar
+from .remarcado import remarcar
+
+
+# Deja constancia EN LA SALIDA de que corremos sin GIL: la captura de la ejecución
+# sirve así de evidencia de la técnica de paralelismo, sin tener que probarlo aparte.
+# `sys._is_gil_enabled` solo existe en 3.13+; en un build normal se asume GIL activo.
+def _banner_entorno() -> None:
+    gil = sys._is_gil_enabled() if hasattr(sys, "_is_gil_enabled") else True
+    print("=== Entorno ===")
+    print(f"  Python : {sys.version.split()[0]}"
+          f"{'  (free-threaded)' if not gil else ''}")
+    if gil:
+        print("  GIL    : ACTIVO — los hilos se turnan la CPU (solo ayudan en I/O)")
+    else:
+        print("  GIL    : DESACTIVADO — los hilos usan varios núcleos de verdad")
+    print(f"  Núcleos: {os.cpu_count()}")
 
 
 def _reporte(resultados: list[ResultadoRed], almacen: Almacen) -> None:
@@ -26,9 +55,67 @@ def _reporte(resultados: list[ResultadoRed], almacen: Almacen) -> None:
     )
 
 
+def _argumentos() -> argparse.Namespace:
+    disponibles = [E.red for E in EXTRACTORES_POR_DEFECTO]
+    p = argparse.ArgumentParser(prog="extractor-mundial")
+    p.add_argument(
+        "--redes",
+        nargs="+",
+        choices=disponibles,
+        default=disponibles,
+        metavar="RED",
+        help=f"redes a extraer (por defecto, las {len(disponibles)} en paralelo): "
+             f"{', '.join(disponibles)}",
+    )
+    p.add_argument(
+        "--max-por-criterio",
+        type=int,
+        metavar="N",
+        help="sobrescribe el tope de config/busqueda.toml. Útil para la corrida "
+             "corta de evidencia.",
+    )
+    p.add_argument(
+        "--remarcar",
+        action="store_true",
+        help="recalcula el campo 'estrategia' del dataset ya extraído con el léxico "
+             "actual y sale. No pide nada a la red: úsalo tras tocar lexico.txt.",
+    )
+    return p.parse_args()
+
+
+def _solo_remarcar(config) -> None:
+    almacen = Almacen(DIR_DATA)
+    almacen.cerrar()  # el re-marcado reescribe el jsonl: no dejarlo abierto
+    total, dirigidas, cambiados = remarcar(DIR_DATA, config)
+    if not total:
+        print("No hay dataset.jsonl que re-marcar.")
+        return
+    pct = dirigidas / total * 100
+    print(f"Re-marcado con el léxico actual ({len(config.lexico)} términos):")
+    print(f"  registros : {total}")
+    print(f"  dirigida  : {dirigidas}  ({pct:.1f}%)")
+    print(f"  cambiados : {cambiados}")
+    # Regenerar las vistas CSV/JSON desde el jsonl ya corregido.
+    for ruta in Almacen(DIR_DATA).volcar():
+        print(f"  - {ruta.name}")
+
+
 def main() -> None:
+    args = _argumentos()
+    _banner_entorno()
+
     config = cargar_config()
-    extractores = [Extractor(config) for Extractor in EXTRACTORES_POR_DEFECTO]
+    if args.remarcar:
+        _solo_remarcar(config)
+        return
+
+    if args.max_por_criterio is not None:
+        config.max_por_criterio = args.max_por_criterio
+
+    elegidos = [E for E in EXTRACTORES_POR_DEFECTO if E.red in args.redes]
+    extractores = [Extractor(config) for Extractor in elegidos]
+    print(f"\nLanzando {len(extractores)} extractor(es) en paralelo: "
+          f"{', '.join(e.red for e in extractores)}")
 
     almacen = Almacen(DIR_DATA)
     resultados: list[ResultadoRed] = []

@@ -289,6 +289,7 @@ source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
     { name = "pandas" },
+    { name = "requests" },
     { name = "youtube-comment-downloader" },
     { name = "yt-dlp" },
 ]
@@ -304,6 +305,7 @@ analisis = [
 requires-dist = [
     { name = "matplotlib", specifier = ">=3.11.0" },
     { name = "pandas", specifier = ">=3.0.3" },
+    { name = "requests", specifier = ">=2.34.2" },
     { name = "youtube-comment-downloader", specifier = ">=0.1.78" },
     { name = "yt-dlp", specifier = ">=2026.7.4" },
 ]

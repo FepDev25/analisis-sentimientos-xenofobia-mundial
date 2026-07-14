@@ -30,8 +30,24 @@ playlists = [
 pausa_videos = 2.0
 
 [reddit]
-# Respaldo de X: búsqueda por subreddit.
+# ❌ DESCARTADO (13-jul-2026). Reddit responde 403 al acceso programático desde su
+# propia CDN (www y old, con y sin User-Agent de navegador) y su registro de apps
+# ya no emite credenciales. Se conserva la config como evidencia de la decisión.
+# Reemplazado por Bluesky (protocolo abierto AT) + Mastodon.
 subreddits = ["soccer", "worldcup", "argentina", "brasil", "ecuador"]
+
+[bluesky]
+# Red social sobre el protocolo abierto AT. API oficial; la BÚSQUEDA requiere
+# sesión → cuenta gratuita + app password (instantáneo, sin aprobación manual).
+# Credenciales en .env: BLUESKY_HANDLE / BLUESKY_APP_PASSWORD
+# Alcance: búsqueda global por texto (igual que se planeó para X).
+# Idiomas a los que se acota la búsqueda (el tema es interétnico y multiidioma).
+idiomas = ["es", "pt", "en"]
+# Tope de consultas 'dirigida' (evento × léxico). El producto cartesiano completo
+# son miles de queries: se corta aquí para que la corrida termine en minutos.
+# Se recorre intercalando por término del léxico, así el recorte sigue cubriendo
+# TODAS las selecciones (ver Config.criterios_dirigida).
+max_criterios_dirigida = 120
 
 [limites]
 # Topes de volumen. Suben el tamaño del dataset a costa de más tiempo de red.
