@@ -45,10 +45,11 @@ def _reporte(resultados: list[ResultadoRed], almacen: Almacen) -> None:
     print("\n=== Resultado de la extracción paralela ===")
     for r in resultados:
         estado = f"{r.total} registros" if not r.error else f"⚠ {r.error}"
-        print(f"  [{r.red:>8}] {estado}")
+        print(f"  [{r.red:>8}] {estado}  ({r.duracion_s:.2f}s)")
     if resultados:
+        duracion_total = max(r.duracion_s for r in resultados)
         print(f"\nTiempo total (los {len(resultados)} en paralelo): "
-              f"{resultados[0].duracion_s:.2f}s")
+              f"{duracion_total:.2f}s")
     print(
         f"Nuevos en esta corrida: {almacen.nuevos}  |  "
         f"previos: {almacen.previos}  |  total acumulado: {almacen.total}"

@@ -33,6 +33,7 @@ def _productor(
     cola: "queue.Queue",
     resultado: ResultadoRed,
 ) -> None:
+    inicio = time.perf_counter()
     try:
         for registro in extractor.extraer():
             cola.put(registro)
@@ -42,6 +43,7 @@ def _productor(
     except Exception as e:  # robustez: un extractor caído no tumba a los demás
         resultado.error = f"{type(e).__name__}: {e}"
     finally:
+        resultado.duracion_s = time.perf_counter() - inicio
         cola.put(_FIN)  # avisa al controlador que este productor acabó
 
 # Lanza todos los extractores en paralelo y consume sus registros
@@ -63,7 +65,6 @@ def ejecutar(
 
     # Lanzar los hilos productores, TODOS arrancan antes de consumir
     hilos = []
-    inicio = time.perf_counter()
     for extractor, resultado in zip(extractores, resultados):
         h = threading.Thread(
             target=_productor,
@@ -87,7 +88,4 @@ def ejecutar(
     for h in hilos:
         h.join()
 
-    dur = time.perf_counter() - inicio
-    for r in resultados:
-        r.duracion_s = dur  # tiempo total
     return resultados
