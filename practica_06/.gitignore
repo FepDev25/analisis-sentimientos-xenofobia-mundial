@@ -7,6 +7,7 @@
 
 # Entorno / uv
 .venv/
+.playwright/
 __pycache__/
 *.pyc
 
