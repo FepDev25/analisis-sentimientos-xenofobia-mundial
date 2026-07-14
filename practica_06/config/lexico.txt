@@ -59,7 +59,6 @@ frogs
 🐵
 🦍
 🍌
-🍉
 👳
 🐒🍌
 🦍🍌
@@ -117,6 +116,13 @@ p u t 0  a r g e n t i n 0
 # Para reactivarlos hace falta matching por LÍMITE DE PALABRA (rescata a los
 # "substring-inseguros") y/o contexto en la Práctica 7 (los "ambiguos").
 # ============================================================
+#
+# -- Retirados por MEDICIÓN, no por sospecha (13-jul-2026, corpus Bluesky) --
+# 🍉   Estaba como "emoji racista", pero en 2026 es abrumadoramente el símbolo de
+#     solidaridad con PALESTINA. En el corpus marcaba como xenófobos posts sobre
+#     el genocidio en Gaza (p. ej. uno sobre Javier Bardem), que no tienen nada que
+#     ver con xenofobia futbolera. No es ambiguo: en este contexto es sencillamente
+#     incorrecto, y contaminaba la métrica con contenido político no relacionado.
 #
 # -- Substring-inseguros (matchean dentro de palabras inocentes) --
 # mono        (dentro de: demonio, armonioso)
