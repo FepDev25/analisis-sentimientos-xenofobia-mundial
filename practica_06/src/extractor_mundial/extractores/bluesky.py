@@ -28,8 +28,9 @@ from collections.abc import Iterator
 
 import requests
 
-from ..config import Criterio
+from ..config import Criterio, DIR_CONFIG
 from ..contrato import Registro
+from ..lexico import cargar as cargar_lexico
 from .base import ExtractorBase
 
 API = "https://bsky.social/xrpc"
@@ -52,7 +53,7 @@ class ExtractorBluesky(ExtractorBase):
 
     def __init__(self, config) -> None:
         super().__init__(config)
-        self._lexico = [t.lower() for t in config.lexico]
+        self._lexico = cargar_lexico(DIR_CONFIG / "lexico.txt")
         self._idiomas = set(config.idiomas_bluesky)
         self._sesion = requests.Session()
         self._jwt: str | None = None
@@ -144,7 +145,7 @@ class ExtractorBluesky(ExtractorBase):
 
         # Una búsqueda 'amplia' puede traer igualmente un post con carga xenófoba:
         # se re-marca como 'dirigida' (misma regla que YouTube).
-        con_lexico = any(t in texto.lower() for t in self._lexico)
+        con_lexico = self._lexico.es_dirigida(texto)
         estrategia = "dirigida" if con_lexico else criterio.estrategia
 
         autor = (post.get("author") or {}).get("handle")

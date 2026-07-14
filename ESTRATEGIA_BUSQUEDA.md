@@ -20,16 +20,18 @@ Durante el Mundial, las redes sociales se inundan de comentarios xenófobos e in
 - Senadora de Paraguay a Mbappé (Francia): "criado por chimpancés / no tomó leche sino agua de coco" — xenofobia disfrazada de humor por figura pública.
 - Rivalidades México–Argentina, y comentarios hacia Ecuador (referencias a "monos", color de piel).
 
-## Fuentes seleccionadas (3 + respaldo)
+## Fuentes seleccionadas
 
-| Fuente | Relevancia | Dificultad scraping (2026) | Alcance |
+| Fuente | Relevancia | Acceso (2026) | Alcance |
 |--------|-----------|----------------------------|---------|
-| **YouTube** | Alta (comentarios en resúmenes de goles) | 🟢 Fácil — API oficial | Por canal/video |
+| **YouTube** | Alta (comentarios en resúmenes de goles) | 🟢 `yt-dlp` + `youtube-comment-downloader`, sin API key | Por canal/video/playlist |
+| **Bluesky** | Alta | 🟢 API oficial del protocolo AT + app password | Búsqueda global por query |
 | **TikTok** | Muy alta | 🟡 Media — librerías no oficiales | Búsqueda global por hashtag |
-| **X** | Máxima (+ ángulo traducción) | 🔴 Difícil — API cara, anti-bot | Búsqueda global por query |
-| **Reddit** *(respaldo)* | Alta | 🟢 Fácil | Por subreddit |
 
-**Plan de riesgo:** X es la fuente más valiosa pero la más frágil. Si el extractor de X se cae antes del cierre (15-jul-2026), se reemplaza por **Reddit** (`r/soccer`, `r/worldcup`, subs de selecciones) para no perder la práctica.
+**Fuentes descartadas o fuera del trío:** X tiene máximo valor para el tema, pero queda fuera por API
+de pago y restricciones anti-bot. Reddit fue descartado tras responder HTTP 403 al acceso
+programático y no emitir credenciales nuevas en su registro de aplicaciones. Bluesky reemplaza a
+Reddit porque ofrece búsqueda global sobre un protocolo abierto y acceso inmediato con app password.
 
 ### División de trabajo (3 integrantes)
 
@@ -46,8 +48,7 @@ Durante el Mundial, las redes sociales se inundan de comentarios xenófobos e in
 | **Histórica** | anterior a mayo | Opcional (*nice to have*) |
 
 > ⚠️ **Realidad técnica:** el filtro por fecha funciona distinto por red.
-> - YouTube / Reddit: timestamp por comentario → filtrado limpio del lado cliente.
-> - X: operadores `since:`/`until:` existen pero limitados por anti-bot.
+> - YouTube / Bluesky: timestamp por comentario/post → filtrado posible del lado cliente.
 > - TikTok: **sin filtro de fecha usable** → se trae lo disponible y se filtra localmente por el timestamp que venga.
 > Patrón real de implementación: *"traer todo lo posible de la búsqueda y filtrar por fecha localmente"*. No prometer en el informe una precisión temporal que TikTok no puede dar.
 
@@ -80,11 +81,10 @@ Cruce de *evento × términos peyorativos* para elevar la precisión. Se mantien
 
 ## Alcance por fuente (resumen)
 
-- **YouTube** → por **canal/video**: canales oficiales de resúmenes (FIFA, ESPN, federaciones, medios deportivos). La API entrega los comentarios del video.
-- **X** → **búsqueda global** por query (hashtag + término). El contenido vive en tuiteros independientes, no en cuentas oficiales.
-- **TikTok** → **búsqueda global** por hashtag/keyword (misma lógica que X).
-- **Reddit** (respaldo) → por **subreddit** (`r/soccer`, `r/worldcup`, subs de selecciones), buscando dentro de ellos.
+- **YouTube** → por **canal/video/playlist**: resúmenes y contenido deportivo donde se concentran comentarios.
+- **Bluesky** → **búsqueda global** por query: hashtags, selecciones, jugadores y cruces con léxico.
+- **TikTok** → **búsqueda global** por hashtag/keyword: plataforma de alto volumen y conversación audiovisual.
 
 ## Resumen en una línea (para el informe)
 
-> Ventana temporal de 3 capas (previa / torneo / histórica), búsqueda de dos capas (evento × léxico xenófobo) con etiquetado de origen, alcance por canal en YouTube y búsqueda global por hashtag/término en X y TikTok (Reddit por subreddit como respaldo).
+> Ventana temporal de 3 capas (previa / torneo / histórica), búsqueda de dos capas (evento × léxico xenófobo) con etiquetado de origen, alcance por canal/video en YouTube y búsqueda global por query o hashtag en Bluesky y TikTok.

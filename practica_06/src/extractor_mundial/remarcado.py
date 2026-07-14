@@ -15,7 +15,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from .config import Config
+from .config import DIR_CONFIG, Config
+from .lexico import cargar as cargar_lexico
 
 
 def remarcar(dir_data: Path, config: Config) -> tuple[int, int, int]:
@@ -24,7 +25,7 @@ def remarcar(dir_data: Path, config: Config) -> tuple[int, int, int]:
     if not jsonl.exists():
         return (0, 0, 0)
 
-    lexico = [t.lower() for t in config.lexico]
+    lexico = cargar_lexico(DIR_CONFIG / "lexico.txt")
     queries_dirigidas = {c.query for c in config.criterios_dirigida()}
 
     registros: list[dict] = []
@@ -42,7 +43,7 @@ def remarcar(dir_data: Path, config: Config) -> tuple[int, int, int]:
         except json.JSONDecodeError:
             continue  # línea truncada por un corte previo
 
-        con_lexico = any(t in d["texto"].lower() for t in lexico)
+        con_lexico = lexico.es_dirigida(d["texto"])
         de_consulta_dirigida = d["criterio_busqueda"] in queries_dirigidas
         nueva = "dirigida" if (con_lexico or de_consulta_dirigida) else "amplia"
 
