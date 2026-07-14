@@ -38,6 +38,12 @@ class Config:
     max_videos: int          # videos por corrida (tandas); evita throttle
     pausa_youtube: float     # segundos de pausa entre videos
 
+    # X (Playwright) — ver extractores/x.py
+    x_sesion: str = "data/x_session.json"     # ruta del storage_state (sesión)
+    x_headless: bool = False                  # X detecta headless con más facilidad
+    x_scrolls_sin_avance: int = 5             # cortar la query tras N scrolls sin tweets nuevos
+    x_pausa: float = 2.0                      # segundos entre queries
+
     # Términos "evento" combinados
     @property
     def terminos_evento(self) -> list[str]:
@@ -105,6 +111,7 @@ def cargar_config(
     yt = d.get("youtube", {})
     rd = d.get("reddit", {})
     bs = d.get("bluesky", {})
+    x = d.get("x", {})
     lim = d.get("limites", {})
 
     return Config(
@@ -125,4 +132,8 @@ def cargar_config(
         max_total_por_red=lim.get("max_total_por_red", 2000),
         max_videos=lim.get("max_videos", 30),
         pausa_youtube=yt.get("pausa_videos", 2.0),
+        x_sesion=x.get("sesion", "data/x_session.json"),
+        x_headless=x.get("headless", False),
+        x_scrolls_sin_avance=x.get("scrolls_sin_avance", 5),
+        x_pausa=x.get("pausa", 2.0),
     )
