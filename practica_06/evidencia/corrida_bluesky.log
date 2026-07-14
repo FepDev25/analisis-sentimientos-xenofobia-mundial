@@ -1,0 +1,18 @@
+[bluesky] consulta 'Ecuador gorila' omitida (HTTPError: 502 Server Error: Bad Gateway for url: https://bsky.social/xrpc/app.bsky.feed.searchPosts?q=Ecuador+gorila&limit=100)
+=== Entorno ===
+  Python : 3.14.5  (free-threaded)
+  GIL    : DESACTIVADO — los hilos usan varios núcleos de verdad
+  Núcleos: 24
+
+Lanzando 1 extractor(es) en paralelo: bluesky
+
+=== Resultado de la extracción paralela ===
+  [ bluesky] 37591 registros
+
+Tiempo total (los 1 en paralelo): 474.23s
+Nuevos en esta corrida: 33479  |  previos: 0  |  total acumulado: 33479
+
+Archivos generados:
+  - /home/samidev/Escritorio/COMPUTACION PARALELA/SEGUNDO_INTERCICLO/analisis-sentimientos-xenofobia-mundial/practica_06/data/bluesky.csv
+  - /home/samidev/Escritorio/COMPUTACION PARALELA/SEGUNDO_INTERCICLO/analisis-sentimientos-xenofobia-mundial/practica_06/data/dataset.csv
+  - /home/samidev/Escritorio/COMPUTACION PARALELA/SEGUNDO_INTERCICLO/analisis-sentimientos-xenofobia-mundial/practica_06/data/dataset.json
