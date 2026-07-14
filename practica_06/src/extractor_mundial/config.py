@@ -48,7 +48,7 @@ class Config:
             *self.jugadores,
         ]
 
-    # Criterios de búsqueda para X / TikTok (texto libre)
+    # Criterios de búsqueda amplia para redes con búsqueda por texto libre.
     def criterios_amplia(self) -> list[Criterio]:
         """baseline de volumen."""
         return [Criterio(q, "amplia") for q in self.terminos_evento]
