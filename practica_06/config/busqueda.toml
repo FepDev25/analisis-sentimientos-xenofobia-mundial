@@ -56,3 +56,13 @@ max_criterios_dirigida = 120
 max_por_criterio = 2000
 max_total_por_red = 1000000
 max_videos = 30
+[x]
+# Extractor de X con Playwright (navegador logueado). Ver extractores/x.py.
+# La sesión se captura una vez: `uv run --group x python scripts/recoleccion_x.py --login`
+sesion = "data/x_session.json"
+# X detecta headless con facilidad; headful (false) evade mejor el anti-bot.
+headless = false
+# Cortar una query tras N scrolls seguidos sin tweets nuevos (fin/stall).
+scrolls_sin_avance = 5
+# Pausa (s) entre queries, anti-throttle.
+pausa = 2.0

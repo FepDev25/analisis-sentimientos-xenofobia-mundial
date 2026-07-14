@@ -28,3 +28,10 @@ analisis = [
     "matplotlib>=3.11.0",
     "nbconvert>=7.17.1",
 ]
+x = [
+    "playwright>=1.48.0",
+]
+test = [
+    "pytest>=8.3.0",
+    "playwright>=1.48.0",
+]
