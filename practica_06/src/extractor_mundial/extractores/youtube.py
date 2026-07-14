@@ -25,8 +25,9 @@ from youtube_comment_downloader import (
 )
 from yt_dlp import YoutubeDL
 
-from ..config import DIR_DATA
+from ..config import DIR_CONFIG, DIR_DATA
 from ..contrato import Registro
+from ..lexico import cargar as cargar_lexico
 from .base import ExtractorBase
 
 
@@ -55,8 +56,9 @@ class ExtractorYouTube(ExtractorBase):
 
     def __init__(self, config) -> None:
         super().__init__(config)
-        # Léxico en minúsculas para el marcado amplia/dirigida.
-        self._lexico = [t.lower() for t in config.lexico]
+        # Léxico compartido (mismo marcado que el AED): substring + límite de
+        # palabra para los términos `exacto`, con menciones @usuario descartadas.
+        self._lexico = cargar_lexico(DIR_CONFIG / "lexico.txt")
         self._downloader = YoutubeCommentDownloader()
         self._ruta_hechos = DIR_DATA / self._ARCHIVO_HECHOS
         self._ruta_fallidos = DIR_DATA / self._ARCHIVO_FALLIDOS
@@ -145,7 +147,7 @@ class ExtractorYouTube(ExtractorBase):
             texto = (c.get("text") or "").strip()
             if not texto:
                 continue
-            dirigida = any(t in texto.lower() for t in self._lexico)
+            dirigida = self._lexico.es_dirigida(texto)
             yield Registro(
                 id=c["cid"],
                 red=self.red,
