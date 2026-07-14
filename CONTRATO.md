@@ -7,7 +7,7 @@
 | Campo | Tipo | Descripción | Obligatorio |
 |-------|------|-------------|:-----------:|
 | `id` | string | ID único del comentario/post (el que da la red). Evita duplicados. | ✅ |
-| `red` | string | Fuente: `"x"` \| `"tiktok"` \| `"youtube"` \| `"reddit"`. **Trazabilidad.** | ✅ |
+| `red` | string | Fuente: `"youtube"` \| `"bluesky"` \| `"tiktok"`; históricas/plan B: `"x"` \| `"reddit"`. **Trazabilidad.** | ✅ |
 | `estrategia` | string | Origen de recolección: `"amplia"` \| `"dirigida"`. | ✅ |
 | `criterio_busqueda` | string | Query/hashtag exacto usado (`"#ARGMEX"`, `"Brasil monos"`, …). **Trazabilidad.** | ✅ |
 | `texto` | string | Contenido textual del comentario/post. **Dato central** + insumo Práctica 7. | ✅ |
@@ -25,7 +25,7 @@
 ## Reglas de diseño
 
 1. **Mismo esquema siempre.** Si TikTok no da `idioma`, va `null` — pero la clave existe igual en las tres redes.
-2. **`metricas` es un diccionario flexible** porque cada red mide distinto (X: reposts; YouTube: vistas). No se fuerza la unificación de lo no unificable.
+2. **`metricas` es un diccionario flexible** porque cada red mide distinto (Bluesky: reposts/citas; YouTube: likes/respuestas; TikTok: likes/compartidos). No se fuerza la unificación de lo no unificable.
 3. **`id` único por red** para deduplicar. Al consolidar, la unicidad global se garantiza con la combinación (`red`, `id`).
 4. **Fechas en ISO 8601** (`2026-07-10T14:30:00Z`) para poder filtrar y ordenar.
 
@@ -33,23 +33,23 @@
 
 ```json
 {
-  "id": "1810234567890123456",
-  "red": "x",
+  "id": "at://did:plc:ejemplo/app.bsky.feed.post/3kabc123",
+  "red": "bluesky",
   "estrategia": "dirigida",
-  "criterio_busqueda": "#BRAJPN monos",
+  "criterio_busqueda": "Brasil monos",
   "texto": "…",
   "idioma": "pt",
-  "autor": "@usuario_ejemplo",
+  "autor": "usuario.bsky.social",
   "fecha_publicacion": "2026-06-28T21:15:00Z",
-  "url": "https://x.com/usuario_ejemplo/status/1810234567890123456",
-  "metricas": { "likes": 42, "reposts": 7, "respuestas": 3 },
+  "url": "https://bsky.app/profile/usuario.bsky.social/post/3kabc123",
+  "metricas": { "likes": 42, "reposts": 7, "respuestas": 3, "citas": 1 },
   "fecha_extraccion": "2026-07-10T14:30:00Z"
 }
 ```
 
 ## Formato de salida
 
-- **Un archivo por red:** `data/x.csv`, `data/tiktok.csv`, `data/youtube.csv` (y `data/reddit.csv` si se activa el respaldo) → evidencia clara por fuente.
+- **Un archivo por red:** `data/youtube.csv`, `data/bluesky.csv`, `data/tiktok.csv` → evidencia clara por fuente.
 - **Un consolidado:** `data/dataset.csv` (o `dataset.json`) que el orquestador arma juntando los tres → dataset unificado para la Práctica 7.
 
 > Para el campo `metricas` en CSV se serializa como JSON string; en JSON va como objeto anidado.

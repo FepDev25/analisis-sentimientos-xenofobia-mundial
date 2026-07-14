@@ -4,7 +4,7 @@
 inicio = "2026-05-11"      # capa previa (buildup)
 fin    = "2026-07-19"      # final del torneo
 
-# Hashtags de torneo (búsqueda global en X y TikTok).
+# Hashtags de torneo (búsqueda global en Bluesky y TikTok).
 hashtags_torneo = ["#WorldCup2026", "#FIFAWorldCup", "#Mundial2026", "#WC26"]
 
 # Hashtags de partido: código FIFA de 3 letras por selección.
@@ -33,14 +33,14 @@ pausa_videos = 2.0
 # ❌ DESCARTADO (13-jul-2026). Reddit responde 403 al acceso programático desde su
 # propia CDN (www y old, con y sin User-Agent de navegador) y su registro de apps
 # ya no emite credenciales. Se conserva la config como evidencia de la decisión.
-# Reemplazado por Bluesky (protocolo abierto AT) + Mastodon.
+# Reemplazado por Bluesky (protocolo abierto AT).
 subreddits = ["soccer", "worldcup", "argentina", "brasil", "ecuador"]
 
 [bluesky]
 # Red social sobre el protocolo abierto AT. API oficial; la BÚSQUEDA requiere
 # sesión → cuenta gratuita + app password (instantáneo, sin aprobación manual).
 # Credenciales en .env: BLUESKY_HANDLE / BLUESKY_APP_PASSWORD
-# Alcance: búsqueda global por texto (igual que se planeó para X).
+# Alcance: búsqueda global por texto.
 # Idiomas a los que se acota la búsqueda (el tema es interétnico y multiidioma).
 idiomas = ["es", "pt", "en"]
 # Tope de consultas 'dirigida' (evento × léxico). El producto cartesiano completo
