@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.14"
 dependencies = [
+    "matplotlib>=3.11.0",
     "pandas>=3.0.3",
     "youtube-comment-downloader>=0.1.78",
     "yt-dlp>=2026.7.4",
@@ -19,3 +20,10 @@ extractor-mundial = "extractor_mundial:main"
 [build-system]
 requires = ["uv_build>=0.11.28,<0.12.0"]
 build-backend = "uv_build"
+
+[dependency-groups]
+analisis = [
+    "ipykernel>=7.3.0",
+    "matplotlib>=3.11.0",
+    "nbconvert>=7.17.1",
+]
