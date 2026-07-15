@@ -1,0 +1,30 @@
+=== Entorno ===
+  Python : 3.14.3  (free-threaded)
+  GIL    : DESACTIVADO — los hilos usan varios núcleos de verdad
+  Núcleos: 20
+
+Lanzando 3 extractor(es) en paralelo: youtube, bluesky, x
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video j-zGca2GhrE omitido (RuntimeError: Failed to set sorting) — descartado tras 3 fallos
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video bWbNut6b2W8 omitido (RuntimeError: Failed to set sorting)
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video IYT0hET6JOY omitido (RuntimeError: Failed to set sorting)
+
+=== Resultado de la extracción paralela ===
+  [ youtube] 0 registros  (106.68s)
+  [ bluesky] 15 registros  (2.78s)
+  [       x] 15 registros  (17.37s)
+
+Tiempo total (los 3 en paralelo): 106.68s
+Nuevos en esta corrida: 21  |  previos: 403340  |  total acumulado: 403361
+
+Archivos generados:
+  - /home/felipep/Documentos/universidad/universidad 8vo/computacion_paralela/proyecto_final_ciclo/practica_06/data/youtube.csv
+  - /home/felipep/Documentos/universidad/universidad 8vo/computacion_paralela/proyecto_final_ciclo/practica_06/data/x.csv
+  - /home/felipep/Documentos/universidad/universidad 8vo/computacion_paralela/proyecto_final_ciclo/practica_06/data/bluesky.csv
+  - /home/felipep/Documentos/universidad/universidad 8vo/computacion_paralela/proyecto_final_ciclo/practica_06/data/dataset.csv
+  - /home/felipep/Documentos/universidad/universidad 8vo/computacion_paralela/proyecto_final_ciclo/practica_06/data/dataset.json
