@@ -56,7 +56,6 @@ max_criterios_dirigida = 120
 max_por_criterio = 2000
 max_total_por_red = 1000000
 max_videos = 30
-<<<<<<< HEAD
 [x]
 # Extractor de X con Playwright (navegador logueado). Ver extractores/x.py.
 # La sesión se captura una vez: `uv run --group x python scripts/recoleccion_x.py --login`
@@ -67,7 +66,6 @@ headless = false
 scrolls_sin_avance = 5
 # Pausa (s) entre queries, anti-throttle.
 pausa = 2.0
-=======
 
 [tumblr]
 # Tumblr busca por etiquetas, no por consultas de texto libre.
@@ -101,4 +99,3 @@ etiquetas = [
   "Japan",
   "Morocco"
 ]
->>>>>>> e8194a1 (extractores de Tumblr y Twitch)

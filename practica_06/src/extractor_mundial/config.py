@@ -112,11 +112,8 @@ def cargar_config(
     yt = d.get("youtube", {})
     rd = d.get("reddit", {})
     bs = d.get("bluesky", {})
-<<<<<<< HEAD
     x = d.get("x", {})
-=======
     tb = d.get("tumblr", {})
->>>>>>> e8194a1 (extractores de Tumblr y Twitch)
     lim = d.get("limites", {})
 
     return Config(
