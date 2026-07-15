@@ -73,6 +73,9 @@ def parse_args() -> argparse.Namespace:
                    help="tope de tweets por query (default: el de config).")
     p.add_argument("--headless", action="store_true",
                    help="correr sin ventana (X lo detecta más fácil).")
+    p.add_argument("--sin-backup", action="store_true",
+                   help="no respaldar dataset antes de correr (para loops nocturnos "
+                        "que invocan muchas veces; hacé un backup aparte al inicio).")
     return p.parse_args()
 
 
@@ -269,7 +272,8 @@ def main() -> None:
         sys.exit(1)
 
     print("=== Recolección de X (Playwright) — spike ===")
-    respaldar(DIR_DATA)
+    if not args.sin_backup:
+        respaldar(DIR_DATA)
 
     extractor = ExtractorX(config)
     if args.query:

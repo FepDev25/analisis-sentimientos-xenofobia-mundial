@@ -21,7 +21,7 @@ import sys
 
 from .almacenamiento import Almacen
 from .config import DIR_DATA, cargar_config
-from .extractores import EXTRACTORES_POR_DEFECTO
+from .extractores import EXTRACTORES, EXTRACTORES_POR_DEFECTO
 from .orquestador import ResultadoRed, ejecutar
 from .remarcado import remarcar
 
@@ -57,23 +57,35 @@ def _reporte(resultados: list[ResultadoRed], almacen: Almacen) -> None:
 
 
 def _argumentos() -> argparse.Namespace:
-    disponibles = [E.red for E in EXTRACTORES_POR_DEFECTO]
+    # Se puede elegir cualquier red registrada; por defecto, el trío del grupo.
+    todas = [E.red for E in EXTRACTORES]
+    por_defecto = [E.red for E in EXTRACTORES_POR_DEFECTO]
     p = argparse.ArgumentParser(prog="extractor-mundial")
     p.add_argument(
         "--redes",
         nargs="+",
-        choices=disponibles,
-        default=disponibles,
+        choices=todas,
+        default=por_defecto,
         metavar="RED",
-        help=f"redes a extraer (por defecto, las {len(disponibles)} en paralelo): "
-             f"{', '.join(disponibles)}",
+        help=f"redes a extraer (por defecto, el trío en paralelo: "
+             f"{', '.join(por_defecto)}). Disponibles: {', '.join(todas)}. "
+             f"Para la evidencia multi-fuente: --redes youtube x bluesky",
     )
     p.add_argument(
         "--max-por-criterio",
         type=int,
         metavar="N",
-        help="sobrescribe el tope de config/busqueda.toml. Útil para la corrida "
-             "corta de evidencia.",
+        help="sobrescribe el tope de registros por criterio (config/busqueda.toml). "
+             "Útil para la corrida corta de evidencia.",
+    )
+    p.add_argument(
+        "--max-por-red",
+        type=int,
+        metavar="N",
+        help="tope TOTAL de registros por red; las 3 cortan al alcanzarlo. Es el "
+             "limitador universal para una corrida de EVIDENCIA corta y finita "
+             "(p. ej. --max-por-red 15): a diferencia de --max-por-criterio, también "
+             "acota YouTube, que no busca por criterios sino por videos.",
     )
     p.add_argument(
         "--remarcar",
@@ -112,8 +124,10 @@ def main() -> None:
 
     if args.max_por_criterio is not None:
         config.max_por_criterio = args.max_por_criterio
+    if args.max_por_red is not None:
+        config.max_total_por_red = args.max_por_red
 
-    elegidos = [E for E in EXTRACTORES_POR_DEFECTO if E.red in args.redes]
+    elegidos = [E for E in EXTRACTORES if E.red in args.redes]
     extractores = [Extractor(config) for Extractor in elegidos]
     print(f"\nLanzando {len(extractores)} extractor(es) en paralelo: "
           f"{', '.join(e.red for e in extractores)}")
