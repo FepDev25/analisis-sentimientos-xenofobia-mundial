@@ -4,6 +4,8 @@ from .base import ExtractorBase
 from .bluesky import ExtractorBluesky
 from .reddit import ExtractorReddit
 from .tiktok import ExtractorTikTok
+from .twitch import ExtractorTwitch
+from .tumblr import ExtractorTumblr
 from .x import ExtractorX
 from .youtube import ExtractorYouTube
 
@@ -32,4 +34,5 @@ __all__ = [
     "ExtractorReddit",
     "EXTRACTORES",
     "EXTRACTORES_POR_DEFECTO",
+    "ExtractorTwitch",
 ]

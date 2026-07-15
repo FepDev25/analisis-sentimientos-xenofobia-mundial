@@ -1,0 +1,45 @@
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video YdpY-PSnxCE omitido (RuntimeError: Failed to set sorting)
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video htzquvznqtM omitido (RuntimeError: Failed to set sorting)
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video fuhAPcgmXrk omitido (RuntimeError: Failed to set sorting)
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video IhxagIolUWs omitido (RuntimeError: Failed to set sorting)
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video 96aRC1C0DCA omitido (RuntimeError: Failed to set sorting)
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video 9SZf7qSmVzs omitido (RuntimeError: Failed to set sorting)
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video hdC-mK5AsY8 omitido (RuntimeError: Failed to set sorting)
+[youtube] posible throttle; espero 8s y reintento
+[youtube] posible throttle; espero 20s y reintento
+[youtube] video jTvLEH-Dg00 omitido (RuntimeError: Failed to set sorting)
+=== Entorno ===
+  Python : 3.14.6  (free-threaded)
+  GIL    : DESACTIVADO — los hilos usan varios núcleos de verdad
+  Núcleos: 12
+
+Lanzando 3 extractor(es) en paralelo: youtube, bluesky, twitch
+
+=== Resultado de la extracción paralela ===
+  [ youtube] 22 registros  (359.10s)
+  [ bluesky] ⚠ FaltanCredenciales: Bluesky rechazó las credenciales (401). Revisa el handle y que la clave sea un APP PASSWORD (Settings > App Passwords), no la de la cuenta.  (0.39s)
+  [  twitch] 65444 registros  (1.80s)
+
+Tiempo total (los 3 en paralelo): 359.10s
+Nuevos en esta corrida: 22  |  previos: 73264  |  total acumulado: 73286
+
+Archivos generados:
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/tumblr.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/twitch.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/youtube.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/dataset.csv
+  - /home/josea/analisis-sentimientos-xenofobia-mundial/practica_06/data/dataset.json
