@@ -1,0 +1,28 @@
+[project]
+name = "analisis-sentimiento-mundial"
+version = "0.1.0"
+description = "Análisis de sentimientos paralelo sobre el corpus de xenofobia del Mundial 2026 (Práctica 7 - Computación Paralela)"
+readme = "ENTORNO.md"
+# torch/transformers (via pysentimiento) NO tienen ruedas estables para CPython
+# 3.14 free-threaded. P7 usa un intérprete convencional (3.11–3.13).
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "pysentimiento>=0.7.0",
+    "torch>=2.2.0",
+    "pandas>=2.2.0",
+    "matplotlib>=3.8.0",
+    "langdetect>=1.0.9",
+    "ipykernel>=6.29.0",
+    "nbconvert>=7.16.0",
+    "tabulate>=0.9.0",
+]
+
+[dependency-groups]
+# La validación con LLM (fallback) es opcional; solo se instala si se usa.
+llm = [
+    "anthropic>=0.40.0",
+]
+
+[tool.uv]
+# Aplicación, no librería: no se construye/instala como paquete.
+package = false
