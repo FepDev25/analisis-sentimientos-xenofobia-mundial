@@ -6,7 +6,10 @@ readme = "README.md"
 authors = [
     { name = "Felipe", email = "lamediatricolor@gmail.com" }
 ]
-requires-python = ">=3.14"
+# Se amplia a 3.12 para que el backend del proyecto final pueda instalar este
+# paquete (torch no tiene ruedas para 3.14 free-threaded). P6 sigue corriendo en
+# 3.14t: lo fija su `.python-version`, que no cambia.
+requires-python = ">=3.12"
 dependencies = [
     "TikTokApi>=7.3.3",
     "matplotlib>=3.11.0",
