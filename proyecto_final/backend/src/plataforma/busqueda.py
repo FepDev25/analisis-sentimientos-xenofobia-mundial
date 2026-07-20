@@ -9,9 +9,10 @@ import sqlite3
 from dataclasses import asdict, dataclass
 
 from extractor_mundial import orquestador
-from extractor_mundial.config import Config, Criterio, cargar_config
+from extractor_mundial.config import DIR_DATA, Config, Criterio, cargar_config
 from extractor_mundial.extractores.base import ExtractorBase
 from extractor_mundial.extractores.bluesky import ExtractorBluesky
+from extractor_mundial.extractores.mastodon import ExtractorMastodon
 from extractor_mundial.extractores.x import ExtractorX
 from extractor_mundial.extractores.youtube_api import ExtractorYouTubeApi
 
@@ -54,6 +55,9 @@ def _config_para(query: str) -> ConfigBusqueda:
     cfg = ConfigBusqueda(**asdict(base), query=query)
     cfg.max_por_criterio = config.MAX_POR_CRITERIO
     cfg.max_total_por_red = config.MAX_POR_RED
+    # La sesion de X vive en practica_06/data; sin ruta absoluta el extractor la
+    # buscaria relativa al cwd del backend (FaltanSesion).
+    cfg.x_sesion = str(DIR_DATA / "x_session.json")
     return cfg
 
 
@@ -62,6 +66,7 @@ def _extractores(cfg: ConfigBusqueda, redes: list[str]) -> list[ExtractorBase]:
         "bluesky": ExtractorBluesky,
         "x": ExtractorX,
         "youtube": ExtractorYouTubeApi,
+        "mastodon": ExtractorMastodon,
     }
     salida: list[ExtractorBase] = []
     for red in redes:

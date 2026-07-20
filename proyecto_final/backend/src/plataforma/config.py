@@ -11,7 +11,8 @@ DIR_DATA = RAIZ / "data"
 RUTA_BD = Path(os.getenv("PLATAFORMA_BD", str(DIR_DATA / "plataforma.db")))
 
 # TikTok queda fuera: su captura es semi-manual, no sirve disparada por un query.
-REDES_EN_VIVO = ("bluesky", "x", "youtube", "tumblr")
+# Reddit queda fuera: en 2026 cerro el registro self-service de la Data API.
+REDES_EN_VIVO = ("bluesky", "x", "youtube", "mastodon")
 
 # Limites de la busqueda EN VIVO, agresivos a proposito: tiene que responder en
 # decenas de segundos, no en la media hora de una corrida batch. X marca el techo
