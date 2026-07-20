@@ -1,4 +1,4 @@
-Apertura: jueves, 9 de julio de 2026, 00:00 Cierre: miércoles, 29 de julio de 2026, 13:59
+Apertura: jueves, 9 de julio de 2026, 00:00 Cierre: miércoles, 22 de julio de 2026, 13:59
 
 ## Antecedentes
 
