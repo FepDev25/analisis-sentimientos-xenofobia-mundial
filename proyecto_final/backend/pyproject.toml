@@ -1,0 +1,40 @@
+[project]
+name = "plataforma-xenofobia"
+version = "0.1.0"
+description = "Plataforma web: extraccion concurrente por query + analisis de sentimientos (Proyecto Final)"
+readme = "README.md"
+# Techo en 3.14: torch (via pysentimiento) no tiene ruedas para el 3.14
+# free-threaded que usa la Practica 6. Ver README, seccion "Por que 3.12".
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn[standard]>=0.32.0",
+    "pydantic>=2.9.0",
+    # Extraccion: se reutiliza el paquete de la Practica 6 TAL CUAL (orquestador
+    # de hilos + cola, contrato de datos, extractores). No se copia codigo.
+    "extractor-mundial",
+    # NLP: mismas versiones que la Practica 7.
+    "pysentimiento>=0.7.0",
+    "torch>=2.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "httpx>=0.27.0",
+]
+
+[tool.uv.sources]
+# Dependencia local: el paquete de P6 se instala en modo editable, asi los
+# arreglos a los extractores se reflejan sin reinstalar.
+extractor-mundial = { path = "../../practica_06", editable = true }
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/plataforma"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
