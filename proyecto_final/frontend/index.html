@@ -16,7 +16,7 @@
     <span class="marca-icono">⚽</span>
     <div>
       <h1>Xenofobia en el Mundial FIFA 2026</h1>
-      <p class="marca-sub">Extracción concurrente multi-red + análisis de sentimientos</p>
+      <p class="marca-sub">Extracción concurrente multi-red · análisis de sentimientos y discurso de odio</p>
     </div>
   </div>
   <div class="estado-api">
@@ -38,59 +38,81 @@
   <!-- ══════════ VISTA 1 — BÚSQUEDA + CONCURRENCIA ══════════ -->
   <section id="vista-busqueda" class="vista activa">
 
-    <div class="tarjeta">
-      <h2>Consulta de búsqueda</h2>
-      <p class="ayuda">
-        El término se envía <strong>simultáneamente</strong> a todas las redes seleccionadas.
-        Cada red se extrae en su propio hilo; la clasificación posterior corre en un pool de procesos.
-      </p>
+    <!-- cuadro A: la consulta -->
+    <div class="rejilla">
+      <div class="tarjeta">
+        <div class="tarjeta-cabeza">
+          <h2>Consulta de búsqueda</h2>
+          <span class="insignia">paso 1</span>
+        </div>
+        <div class="tarjeta-cuerpo">
+          <p class="ayuda">
+            El término se envía <strong>simultáneamente</strong> a todas las redes seleccionadas.
+            Cada red se extrae en su propio hilo; la clasificación posterior corre en un pool de procesos.
+          </p>
 
-      <form id="form-busqueda" class="fila-busqueda">
-        <input id="campo-query" type="text" placeholder="p. ej. Ecuador monos, Mundial 2026, racismo futbol" required minlength="2" maxlength="200" autocomplete="off">
-        <button id="btn-buscar" type="submit" class="btn-primario">Buscar</button>
-      </form>
+          <form id="form-busqueda" class="fila-busqueda">
+            <input id="campo-query" type="text" placeholder="p. ej. Mundial2026, racismo futbol, Ecuador monos" required minlength="2" maxlength="200" autocomplete="off">
+            <button id="btn-buscar" type="submit" class="btn-primario">Buscar</button>
+          </form>
 
-      <div class="sugerencias">
-        <span class="ayuda">Sugerencias:</span>
-        <button class="chip" data-q="Mundial 2026">Mundial 2026</button>
-        <button class="chip" data-q="racismo futbol">racismo futbol</button>
-        <button class="chip" data-q="Ecuador monos">Ecuador monos</button>
-        <button class="chip" data-q="World Cup 2026">World Cup 2026</button>
+          <div class="sugerencias">
+            <span class="ayuda">Sugerencias:</span>
+            <button class="chip" data-q="Mundial2026">Mundial2026</button>
+            <button class="chip" data-q="racismo futbol">racismo futbol</button>
+            <button class="chip" data-q="Ecuador monos">Ecuador monos</button>
+            <button class="chip" data-q="WorldCup2026">WorldCup2026</button>
+          </div>
+
+          <div class="rotulo">Redes a consultar</div>
+          <div id="selector-redes" class="selector-redes"></div>
+        </div>
       </div>
-
-      <div id="selector-redes" class="selector-redes"></div>
     </div>
 
-    <div id="panel-progreso" class="tarjeta oculto">
-      <div class="fila-titulo">
-        <h2>Ejecución concurrente</h2>
-        <div class="cronometro">
-          <span id="fase-actual" class="etiqueta-fase">—</span>
-          <span id="cronometro">0.0 s</span>
+    <!-- cuadros B y C: ejecución y evidencia, lado a lado -->
+    <div id="panel-progreso" class="rejilla rejilla-progreso oculto">
+
+      <div class="tarjeta">
+        <div class="tarjeta-cabeza">
+          <h2>Ejecución concurrente</h2>
+          <div class="cronometro">
+            <span id="fase-actual" class="etiqueta-fase">—</span>
+            <span id="cronometro">0.0 s</span>
+          </div>
+        </div>
+        <div class="tarjeta-cuerpo">
+          <ol class="pasos">
+            <li id="paso-1" class="paso"><span class="paso-num">1</span> Extracción — <em>hilos</em> (I/O)</li>
+            <li id="paso-2" class="paso"><span class="paso-num">2</span> Clasificación — <em>procesos</em> (CPU)</li>
+            <li id="paso-3" class="paso"><span class="paso-num">3</span> Resultados</li>
+          </ol>
+
+          <p class="ayuda" style="margin-bottom:1rem">
+            Una barra por red, todas lanzadas a la vez. Longitud = comentarios recolectados;
+            a la derecha, cuántos y en cuánto tiempo.
+          </p>
+          <div id="carriles" class="carriles"></div>
         </div>
       </div>
 
-      <ol class="pasos">
-        <li id="paso-1" class="paso"><span class="paso-num">1</span> Extracción — <em>hilos</em> (I/O)</li>
-        <li id="paso-2" class="paso"><span class="paso-num">2</span> Clasificación — <em>procesos</em> (CPU)</li>
-        <li id="paso-3" class="paso"><span class="paso-num">3</span> Resultados</li>
-      </ol>
-
-      <p class="ayuda">Una barra por red, todas lanzadas a la vez. Longitud = comentarios recolectados; a la derecha, cuántos y en cuánto tiempo.</p>
-      <div id="carriles" class="carriles"></div>
-
-      <div id="bloque-evidencia" class="evidencia oculto">
-        <h3>Evidencia de paralelismo</h3>
-        <p class="ayuda">
-          Si las redes se consultaran una tras otra, el total sería la <strong>suma</strong> de sus tiempos.
-          Al lanzarlas en hilos, el total lo marca la <strong>más lenta</strong>.
-        </p>
-        <div class="metricas-evidencia">
-          <div class="metrica"><span class="metrica-valor" id="m-pared">—</span><span class="metrica-nombre">tiempo real (pared)</span></div>
-          <div class="metrica"><span class="metrica-valor" id="m-suma">—</span><span class="metrica-nombre">suma secuencial</span></div>
-          <div class="metrica destacada"><span class="metrica-valor" id="m-ahorro">—</span><span class="metrica-nombre">speedup de extracción</span></div>
+      <div id="bloque-evidencia" class="tarjeta oculto">
+        <div class="tarjeta-cabeza">
+          <h2>Evidencia de paralelismo</h2>
+          <span class="insignia">medido</span>
         </div>
-        <div class="lienzo-alto"><canvas id="g-gantt"></canvas></div>
+        <div class="tarjeta-cuerpo">
+          <p class="ayuda" style="margin-bottom:1rem">
+            Si las redes se consultaran una tras otra, el total sería la <strong>suma</strong> de sus
+            tiempos. Al lanzarlas en hilos, el total lo marca la <strong>más lenta</strong>.
+          </p>
+          <div class="metricas">
+            <div class="metrica"><span class="metrica-valor" id="m-pared">—</span><span class="metrica-nombre">en paralelo</span></div>
+            <div class="metrica"><span class="metrica-valor" id="m-suma">—</span><span class="metrica-nombre">suma secuencial</span></div>
+            <div class="metrica destacada"><span class="metrica-valor" id="m-ahorro">—</span><span class="metrica-nombre">speedup</span></div>
+          </div>
+          <div class="lienzo-medio"><canvas id="g-gantt"></canvas></div>
+        </div>
       </div>
     </div>
 
@@ -107,31 +129,37 @@
     <div id="dashboard-contenido" class="oculto">
       <div class="tarjetas-kpi" id="kpis"></div>
 
-      <div class="rejilla-2">
+      <div class="rejilla rejilla-2">
         <div class="tarjeta">
-          <h2>Sentimiento global</h2>
-          <p class="ayuda">Todos los comentarios de la consulta, sin distinguir la red.</p>
-          <div class="lienzo"><canvas id="g-global"></canvas></div>
+          <div class="tarjeta-cabeza"><h2>Sentimiento global</h2></div>
+          <div class="tarjeta-cuerpo">
+            <p class="ayuda">Todos los comentarios de la consulta, sin distinguir la red.</p>
+            <div class="lienzo"><canvas id="g-global"></canvas></div>
+          </div>
         </div>
         <div class="tarjeta">
-          <h2>Sentimiento por red social</h2>
-          <p class="ayuda">Proporción dentro de cada red: permite comparar redes de distinto tamaño.</p>
-          <div class="lienzo"><canvas id="g-por-red"></canvas></div>
+          <div class="tarjeta-cabeza"><h2>Sentimiento por red social</h2></div>
+          <div class="tarjeta-cuerpo">
+            <p class="ayuda">Proporción dentro de cada red: permite comparar redes de distinto tamaño.</p>
+            <div class="lienzo"><canvas id="g-por-red"></canvas></div>
+          </div>
         </div>
       </div>
 
-      <div class="rejilla-2">
+      <div class="rejilla rejilla-2">
         <div class="tarjeta">
-          <h2>Discurso de odio por red</h2>
-          <p class="ayuda">
-            Eje independiente del sentimiento: un comentario puede sonar jocoso y ser xenófobo.
-          </p>
-          <div class="lienzo"><canvas id="g-odio"></canvas></div>
+          <div class="tarjeta-cabeza"><h2>Discurso de odio por red</h2></div>
+          <div class="tarjeta-cuerpo">
+            <p class="ayuda">Eje independiente del sentimiento: un comentario puede sonar jocoso y ser xenófobo.</p>
+            <div class="lienzo"><canvas id="g-odio"></canvas></div>
+          </div>
         </div>
         <div class="tarjeta">
-          <h2>Volumen recolectado por red</h2>
-          <p class="ayuda">Cuánto aportó cada fuente a esta consulta.</p>
-          <div class="lienzo"><canvas id="g-volumen"></canvas></div>
+          <div class="tarjeta-cabeza"><h2>Volumen recolectado por red</h2></div>
+          <div class="tarjeta-cuerpo">
+            <p class="ayuda">Cuánto aportó cada fuente a esta consulta.</p>
+            <div class="lienzo"><canvas id="g-volumen"></canvas></div>
+          </div>
         </div>
       </div>
     </div>
@@ -146,71 +174,71 @@
 
     <div id="explorador-contenido" class="oculto">
       <div class="tarjeta">
-        <div class="fila-titulo">
+        <div class="tarjeta-cabeza">
           <h2>Comentarios recolectados</h2>
-          <span id="contador-filtro" class="ayuda">—</span>
+          <span id="contador-filtro" class="insignia">—</span>
         </div>
+        <div class="tarjeta-cuerpo">
+          <div class="filtros">
+            <label>Red
+              <select id="f-red"><option value="">todas</option></select>
+            </label>
+            <label>Sentimiento
+              <select id="f-sentimiento">
+                <option value="">todos</option>
+                <option value="negativo">negativo</option>
+                <option value="neutral">neutral</option>
+                <option value="positivo">positivo</option>
+              </select>
+            </label>
+            <label>Odio
+              <select id="f-odio">
+                <option value="">todos</option>
+                <option value="si">solo con odio</option>
+                <option value="no">sin odio</option>
+              </select>
+            </label>
+            <label>Estrategia
+              <select id="f-estrategia">
+                <option value="">todas</option>
+                <option value="dirigida">dirigida (léxico)</option>
+                <option value="amplia">amplia</option>
+              </select>
+            </label>
+            <label class="crece">Texto contiene
+              <input id="f-texto" type="text" placeholder="filtrar por palabra…" autocomplete="off">
+            </label>
+            <button id="btn-limpiar" class="btn-secundario">Limpiar</button>
+          </div>
 
-        <div class="filtros">
-          <label>Red
-            <select id="f-red"><option value="">todas</option></select>
-          </label>
-          <label>Sentimiento
-            <select id="f-sentimiento">
-              <option value="">todos</option>
-              <option value="negativo">negativo</option>
-              <option value="neutral">neutral</option>
-              <option value="positivo">positivo</option>
-            </select>
-          </label>
-          <label>Odio
-            <select id="f-odio">
-              <option value="">todos</option>
-              <option value="si">solo con odio</option>
-              <option value="no">sin odio</option>
-            </select>
-          </label>
-          <label>Estrategia
-            <select id="f-estrategia">
-              <option value="">todas</option>
-              <option value="dirigida">dirigida (léxico)</option>
-              <option value="amplia">amplia</option>
-            </select>
-          </label>
-          <label class="crece">Texto contiene
-            <input id="f-texto" type="text" placeholder="filtrar por palabra…" autocomplete="off">
-          </label>
-          <button id="btn-limpiar" class="btn-secundario">Limpiar</button>
+          <div class="tabla-envoltura">
+            <table class="tabla">
+              <thead>
+                <tr>
+                  <th>Red</th>
+                  <th>Comentario</th>
+                  <th>Idioma</th>
+                  <th>Sentimiento</th>
+                  <th>Odio</th>
+                  <th>Enlace</th>
+                </tr>
+              </thead>
+              <tbody id="cuerpo-tabla"></tbody>
+            </table>
+          </div>
+          <div id="sin-resultados" class="vacio oculto"><p>Ningún comentario cumple esos filtros.</p></div>
         </div>
-
-        <div class="tabla-envoltura">
-          <table class="tabla">
-            <thead>
-              <tr>
-                <th>Red</th>
-                <th>Comentario</th>
-                <th>Idioma</th>
-                <th>Sentimiento</th>
-                <th>Odio</th>
-                <th>Enlace</th>
-              </tr>
-            </thead>
-            <tbody id="cuerpo-tabla"></tbody>
-          </table>
-        </div>
-        <div id="sin-resultados" class="vacio oculto"><p>Ningún comentario cumple esos filtros.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- ══════════ VISTA 4 — INTERPRETACIÓN / STORYTELLING ══════════ -->
+  <!-- ══════════ VISTA 4 — INTERPRETACIÓN ══════════ -->
   <section id="vista-historia" class="vista">
     <div id="contenido-historia"></div>
   </section>
 
 </main>
 
-<!-- diálogo de configuración -->
 <div id="modal-config" class="modal oculto">
   <div class="modal-caja">
     <h2>Servidor de la API</h2>
