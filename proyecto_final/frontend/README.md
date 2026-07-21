@@ -117,6 +117,32 @@ comodidades de un framework.
 **Chart.js con copia local.** Es la única dependencia, y está vendorizada en `vendor/`.
 Un CDN implicaría que la demo depende de que haya internet en el aula.
 
+### La paleta de datos (no se eligió a ojo)
+
+Los colores de los gráficos se validaron con un comprobador de contraste y de separación
+perceptual para daltonismo. De ahí salieron dos reglas que el código respeta:
+
+**1. Los colores con significado están reservados.** Rojo = negativo, azul = positivo,
+gris = neutral, naranja = discurso de odio. Las redes sociales usan **otros cuatro tonos**
+(violeta, ámbar, magenta, verde), de modo que un mismo color nunca significa dos cosas
+distintas en pantallas contiguas.
+
+**2. La escala de sentimiento es rojo↔azul, no rojo↔verde.** Es la decisión menos obvia y
+la más importante: rojo y verde son prácticamente **indistinguibles para la deuteranopia**
+(separación perceptual ΔE 4,1, muy por debajo del mínimo de 8), mientras que rojo y azul dan
+ΔE 19,2. Como el sentimiento es el dato central de la aplicación, no puede depender de una
+distinción que una parte de los lectores no percibe. El gris del medio es el punto neutro de
+una escala divergente.
+
+Además, el color nunca es la única señal: las cuatro redes llevan siempre su nombre escrito
+al lado, las barras apiladas mantienen un orden fijo (negativo → neutral → positivo) y todos
+los gráficos tienen leyenda y valores en el tooltip.
+
+**Sin gráficos de doble eje.** Cuando hay que comparar dos magnitudes de escala distinta
+(volumen de comentarios frente a porcentaje de odio, en la pestaña 4) se usan **dos gráficos
+apilados que comparten el orden de categorías**, no dos escalas en un mismo par de ejes: eso
+último invita a leer cruces entre curvas que no significan nada.
+
 ### Por qué no se despliega en un servidor
 
 La aplicación **corre en local a propósito**, y no por falta de recursos. Hay tres razones,
