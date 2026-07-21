@@ -55,7 +55,11 @@ const VistaExplorador = (function () {
 
   function fila(r) {
     // El texto va escapado: viene de redes sociales y puede traer HTML.
-    const autor = r.autor ? `<span class="autor">@${UI.escapar(r.autor)}</span>` : '';
+    // X y YouTube ya entregan el autor con "@"; Bluesky no (es un dominio,
+    // p. ej. `alguien.bsky.social`). Se normaliza para no pintar "@@".
+    const autor = r.autor
+      ? `<span class="autor">@${UI.escapar(String(r.autor).replace(/^@+/, ''))}</span>`
+      : '';
     const marca = r.estrategia === 'dirigida'
       ? ' <span class="etiqueta et-dirigida" title="el texto contiene un término del léxico xenófobo">léxico</span>'
       : '';
