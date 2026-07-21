@@ -57,7 +57,7 @@ const VistaDashboard = (function () {
         datasets: [{
           data: etiquetas.map((s) => global[s]),
           backgroundColor: etiquetas.map((s) => UI.COLOR_SENTIMIENTO[s]),
-          borderColor: '#161a21',
+          borderColor: '#141a24',
           borderWidth: 2,
         }],
       },
@@ -95,7 +95,7 @@ const VistaDashboard = (function () {
             return total ? ((fila[s] || 0) / total) * 100 : 0;
           }),
           backgroundColor: UI.COLOR_SENTIMIENTO[s],
-          borderRadius: 3,
+          ...UI.SEPARADOR,
           conteos: redes.map((red) => (porRed[red] || {})[s] || 0),
         })),
       },

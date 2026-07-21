@@ -22,7 +22,7 @@ const VistaHistoria = (function () {
     const registros = estado.registros || [];
     if (!registros.length) {
       return `
-        <div class="tarjeta">
+        <div class="tarjeta plana">
           <h2>Tu búsqueda</h2>
           <p class="ayuda">
             Cuando lances una consulta en la pestaña <strong>1</strong>, aquí aparecerá
@@ -69,7 +69,7 @@ const VistaHistoria = (function () {
          "de N comentarios, X % son xenófobos".`;
 
     return `
-      <div class="tarjeta">
+      <div class="tarjeta plana">
         <h2>Tu búsqueda: “${UI.escapar(estado.busqueda ? estado.busqueda.query : '')}”</h2>
         <p>
           Se recolectaron <strong>${UI.numero(registros.length)}</strong> comentarios de
@@ -97,7 +97,7 @@ const VistaHistoria = (function () {
       .map((x) => `<code>${UI.escapar(x)}</code>`).join('');
 
     return `
-      <div class="historia-cabecera tarjeta">
+      <div class="tarjeta plana">
         <h2>Qué encontramos en el corpus completo</h2>
         <p>
           La búsqueda en vivo es una muestra pequeña, pensada para responder en segundos.
@@ -113,8 +113,8 @@ const VistaHistoria = (function () {
         </p>
       </div>
 
-      <div class="rejilla-2">
-        <div class="tarjeta hallazgo">
+      <div class="rejilla rejilla-2">
+        <div class="tarjeta plana hallazgo">
           <span class="numero">Hallazgo 1</span>
           <h3>X es el epicentro de la agresión directa</h3>
           <p>
@@ -126,7 +126,7 @@ const VistaHistoria = (function () {
           <div class="lienzo"><canvas id="g-h-redes"></canvas></div>
         </div>
 
-        <div class="tarjeta hallazgo">
+        <div class="tarjeta plana hallazgo">
           <span class="numero">Hallazgo 2</span>
           <h3>Bluesky no es menos racista: es contra-discurso</h3>
           <p>
@@ -140,7 +140,7 @@ const VistaHistoria = (function () {
             sobre las plataformas: <strong>Bluesky captura la meta-conversación; X y YouTube
             capturan la agresión</strong>.
           </p>
-          <div class="metricas-evidencia">
+          <div class="metricas">
             <div class="metrica"><span class="metrica-valor" style="color:var(--odio)">${CORPUS.por_red[0].hateful} %</span><span class="metrica-nombre">odio en X</span></div>
             <div class="metrica"><span class="metrica-valor" style="color:var(--positivo)">${CORPUS.por_red[3].hateful} %</span><span class="metrica-nombre">odio en Bluesky</span></div>
             <div class="metrica"><span class="metrica-valor">${(CORPUS.por_red[0].hateful / CORPUS.por_red[3].hateful).toFixed(1)}×</span><span class="metrica-nombre">de diferencia</span></div>
@@ -152,8 +152,8 @@ const VistaHistoria = (function () {
         </div>
       </div>
 
-      <div class="rejilla-2">
-        <div class="tarjeta hallazgo">
+      <div class="rejilla rejilla-2">
+        <div class="tarjeta plana hallazgo">
           <span class="numero">Hallazgo 3</span>
           <h3>El idioma predice la hostilidad mejor que la red</h3>
           <p>
@@ -165,7 +165,7 @@ const VistaHistoria = (function () {
           <div class="lienzo"><canvas id="g-h-idioma"></canvas></div>
         </div>
 
-        <div class="tarjeta hallazgo">
+        <div class="tarjeta plana hallazgo">
           <span class="numero">Hallazgo 4</span>
           <h3>Lo más frecuente no es lo más virulento</h3>
           <p>
@@ -178,11 +178,18 @@ const VistaHistoria = (function () {
             Traducción: el insulto racial más común circula tan normalizado —como emoji, como broma—
             que ni siquiera se formula de forma agresiva. Justo lo que el hallazgo 5 explica.
           </p>
-          <div class="lienzo"><canvas id="g-h-ejes"></canvas></div>
+          <!-- Dos gráficos apilados con el MISMO orden de categorías, en lugar de
+               un gráfico de doble eje: dos escalas distintas en un solo par de ejes
+               inducen comparaciones falsas. Aquí el contraste se ve alineando las
+               dos series verticalmente. -->
+          <div class="rotulo" style="margin-top:.9rem">Volumen (comentarios)</div>
+          <div class="lienzo-bajo"><canvas id="g-h-ejes-vol"></canvas></div>
+          <div class="rotulo" style="margin-top:.9rem">Virulencia (% con odio)</div>
+          <div class="lienzo-bajo"><canvas id="g-h-ejes-odio"></canvas></div>
         </div>
       </div>
 
-      <div class="tarjeta hallazgo">
+      <div class="tarjeta plana hallazgo">
         <span class="numero">Hallazgo 5 · central</span>
         <h3>El modelo subdetecta el odio implícito</h3>
         <p>
@@ -218,8 +225,8 @@ const VistaHistoria = (function () {
       data: {
         labels: redes.map((f) => UI.nombreRed(f.red)),
         datasets: [
-          { label: '% negativo', data: redes.map((f) => f.negativo), backgroundColor: UI.COLOR_SENTIMIENTO.negativo, borderRadius: 3 },
-          { label: '% con odio', data: redes.map((f) => f.hateful),  backgroundColor: '#f76808', borderRadius: 3 },
+          { label: '% negativo', data: redes.map((f) => f.negativo), backgroundColor: UI.COLOR_SENTIMIENTO.negativo, ...UI.SEPARADOR },
+          { label: '% con odio', data: redes.map((f) => f.hateful),  backgroundColor: UI.COLOR_ODIO, ...UI.SEPARADOR },
         ],
       },
       options: {
@@ -253,26 +260,53 @@ const VistaHistoria = (function () {
       },
     });
 
-    // Dos ejes: volumen (barras) y virulencia (línea). Sirve para ver que no
-    // van juntos — que es exactamente el hallazgo.
+    // Volumen y virulencia son dos magnitudes con escalas distintas. En vez de
+    // meterlas en un mismo par de ejes (dos escalas en un gráfico invitan a leer
+    // cruces que no significan nada), se dibujan como dos gráficos apilados que
+    // COMPARTEN el orden de categorías: la discrepancia se ve de un vistazo.
     const ejes = [...CORPUS.por_eje].sort((a, b) => b.n - a.n);
-    UI.dibujar('g-h-ejes', {
+    const etiquetasEjes = ejes.map((f) => f.eje);
+    const ejeX = {
+      grid: { display: false },
+      ticks: { maxRotation: 34, minRotation: 34, font: { size: 10 }, autoSkip: false },
+    };
+
+    UI.dibujar('g-h-ejes-vol', {
       type: 'bar',
       data: {
-        labels: ejes.map((f) => f.eje),
-        datasets: [
-          { label: 'comentarios', data: ejes.map((f) => f.n), backgroundColor: '#4f8cff', borderRadius: 3, yAxisID: 'y' },
-          { label: '% con odio', data: ejes.map((f) => f.hateful), type: 'line', borderColor: '#f76808', backgroundColor: '#f76808', tension: .3, yAxisID: 'y2' },
-        ],
+        labels: etiquetasEjes,
+        datasets: [{
+          label: 'comentarios',
+          data: ejes.map((f) => f.n),
+          backgroundColor: UI.colorRed('bluesky'),
+          ...UI.SEPARADOR,
+        }],
       },
       options: {
         maintainAspectRatio: false,
-        plugins: { legend: { position: 'bottom' } },
-        scales: {
-          x: { grid: { display: false }, ticks: { maxRotation: 30, minRotation: 30, font: { size: 9 } } },
-          y:  { beginAtZero: true, grid: UI.REJILLA, title: { display: true, text: 'volumen' } },
-          y2: { beginAtZero: true, max: 100, position: 'right', grid: { display: false }, ticks: { callback: (v) => `${v} %` } },
+        plugins: { legend: { display: false } },
+        scales: { x: { ...ejeX, ticks: { ...ejeX.ticks, display: false } }, y: { beginAtZero: true, grid: UI.REJILLA } },
+      },
+    });
+
+    UI.dibujar('g-h-ejes-odio', {
+      type: 'bar',
+      data: {
+        labels: etiquetasEjes,
+        datasets: [{
+          label: '% con odio',
+          data: ejes.map((f) => f.hateful),
+          backgroundColor: UI.COLOR_ODIO,
+          ...UI.SEPARADOR,
+        }],
+      },
+      options: {
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { afterLabel: (c) => `n = ${UI.numero(ejes[c.dataIndex].n)}` } },
         },
+        scales: { x: ejeX, y: { beginAtZero: true, max: 100, grid: UI.REJILLA, ticks: { callback: (v) => `${v} %` } } },
       },
     });
   }

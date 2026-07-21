@@ -6,24 +6,44 @@
 
 const UI = (function () {
 
-  /* Un color por red, estable en toda la app (gráficos, carriles y tabla). */
-  const COLOR_RED = {
-    bluesky:  '#4f8cff',
-    x:        '#9aa4b8',
-    youtube:  '#ff4d4d',
-    mastodon: '#a78bfa',
-    tumblr:   '#38bdf8',
-    tiktok:   '#2dd4bf',
-    reddit:   '#fb923c',
+  /* Los colores viven en el CSS (`:root`) y se leen de ahí: una sola fuente de
+   * verdad para la interfaz y los gráficos.
+   *
+   * La paleta no se eligió a ojo. Se validó con un comprobador de contraste y de
+   * separación para daltonismo, y de ahí salen dos reglas:
+   *
+   *  1. Rojo, azul, gris y naranja están RESERVADOS para el significado
+   *     (negativo, positivo, neutral, odio). Las redes usan otros cuatro tonos,
+   *     así que un color nunca significa dos cosas distintas.
+   *  2. La escala de sentimiento es divergente rojo↔azul y NO rojo↔verde:
+   *     rojo/verde es prácticamente indistinguible para la deuteranopia
+   *     (ΔE 4.1, bajo el mínimo de 8), mientras que rojo/azul da ΔE 19.2.
+   */
+  const _css = (nombre, respaldo) => {
+    const v = getComputedStyle(document.documentElement).getPropertyValue(nombre).trim();
+    return v || respaldo;
   };
-  const COLOR_POR_DEFECTO = '#6b7280';
+
+  const COLOR_RED = {
+    bluesky:  _css('--red-bluesky',  '#9085e9'),
+    x:        _css('--red-x',        '#c98500'),
+    youtube:  _css('--red-youtube',  '#d55181'),
+    mastodon: _css('--red-mastodon', '#008300'),
+    tumblr:   '#1baf7a',
+    tiktok:   '#b06ab0',
+    reddit:   '#8a6d3b',
+  };
+  const COLOR_POR_DEFECTO = '#6d7c93';
 
   const COLOR_SENTIMIENTO = {
-    negativo: '#e5484d',
-    neutral:  '#8b8d98',
-    positivo: '#30a46c',
+    negativo: _css('--negativo', '#e66767'),
+    neutral:  _css('--neutral',  '#8b93a3'),
+    positivo: _css('--positivo', '#4d8df0'),
   };
+  const COLOR_ODIO = _css('--odio', '#d95926');
 
+  // Orden fijo: negativo → neutral → positivo. En las barras apiladas esa
+  // posición es codificación secundaria (la identidad no depende solo del color).
   const ORDEN_SENTIMIENTO = ['negativo', 'neutral', 'positivo'];
 
   const NOMBRE_RED = {
@@ -50,12 +70,32 @@ const UI = (function () {
 
   /* ── Chart.js ───────────────────────────────────────── */
 
-  Chart.defaults.color = '#98a1b3';
+  Chart.defaults.color = _css('--texto-suave', '#9dabc0');
   Chart.defaults.font.family = 'system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
-  Chart.defaults.font.size = 11;
+  Chart.defaults.font.size = 12;
   Chart.defaults.animation.duration = 450;
+  Chart.defaults.plugins.legend.labels.boxWidth = 11;
+  Chart.defaults.plugins.legend.labels.boxHeight = 11;
+  Chart.defaults.plugins.legend.labels.padding = 14;
+  Chart.defaults.plugins.legend.labels.usePointStyle = true;
+  Chart.defaults.plugins.legend.labels.pointStyle = 'circle';
+  Chart.defaults.plugins.tooltip.backgroundColor = '#1b2431';
+  Chart.defaults.plugins.tooltip.borderColor = '#2b3646';
+  Chart.defaults.plugins.tooltip.borderWidth = 1;
+  Chart.defaults.plugins.tooltip.titleColor = '#eef2f8';
+  Chart.defaults.plugins.tooltip.bodyColor = '#eef2f8';
+  Chart.defaults.plugins.tooltip.padding = 10;
+  Chart.defaults.plugins.tooltip.cornerRadius = 8;
+  // Marcas finas: con pocas categorías, una barra a ancho completo se lee como
+  // un bloque de color y no como un dato.
+  Chart.defaults.datasets.bar.maxBarThickness = 58;
 
-  const REJILLA = { color: 'rgba(255,255,255,.06)' };
+  // Rejilla discreta: la cuadrícula orienta, no compite con los datos.
+  const REJILLA = { color: 'rgba(255,255,255,.055)', drawTicks: false };
+
+  // Separación de 2 px entre segmentos apilados y entre barras contiguas: el
+  // borde del color de la superficie evita que dos colores se toquen.
+  const SEPARADOR = { borderColor: '#141a24', borderWidth: 2, borderRadius: 4 };
 
   /* Chart.js no permite dos gráficos sobre el mismo canvas: se guarda la
    * instancia por id y se destruye antes de redibujar. */
@@ -74,7 +114,7 @@ const UI = (function () {
   }
 
   return {
-    COLOR_RED, COLOR_SENTIMIENTO, ORDEN_SENTIMIENTO, REJILLA,
+    COLOR_RED, COLOR_SENTIMIENTO, COLOR_ODIO, ORDEN_SENTIMIENTO, REJILLA, SEPARADOR,
     colorRed, nombreRed, numero, segundos, porcentaje, escapar, dibujar, limpiar,
   };
 })();

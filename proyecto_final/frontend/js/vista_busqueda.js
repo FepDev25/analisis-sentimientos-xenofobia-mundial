@@ -242,5 +242,21 @@ const VistaBusqueda = (function () {
     cargarRedes();
   }
 
-  return { iniciar, recargarRedes: cargarRedes };
+  /* Repinta el panel a partir de un resumen ya terminado, sin volver a
+   * extraer. Sirve para restaurar la pantalla y para probarla con una búsqueda
+   * guardada en la base. */
+  function mostrarResultado(resumen) {
+    if (!resumen || !resumen.redes || !resumen.redes.length) return;
+    const estados = {};
+    const redes = resumen.redes.map((f) => f.red);
+    resumen.redes.forEach((f) => {
+      estados[f.red] = { estado: 'listo', total: f.total, error: f.error, duracion_s: f.duracion_s };
+    });
+    $('panel-progreso').classList.remove('oculto');
+    pintarCarriles(redes, estados);
+    marcarFase('terminada');
+    pintarEvidencia(resumen.redes);
+  }
+
+  return { iniciar, recargarRedes: cargarRedes, mostrarResultado };
 })();
