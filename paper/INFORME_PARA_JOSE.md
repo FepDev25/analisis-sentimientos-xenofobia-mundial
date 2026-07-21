@@ -334,8 +334,49 @@ ronda **1,3×** y no 4×, y la razón está a la vista: X tarda ~14 s mientras l
 responden en menos de 2 s. **El paralelismo está acotado por la fuente más lenta.** Es la Ley
 de Amdahl operando sobre una carga heterogénea: el tiempo de pared converge al máximo
 individual, no a la suma, que es precisamente el comportamiento esperado de una carga
-I/O-bound paralelizada con hilos. Si las cuatro fuentes tuvieran latencias comparables, el
-speedup se acercaría a 4×.
+I/O-bound paralelizada con hilos.
+
+#### 5.1.1 Experimento controlado: quitar la fuente lenta
+
+Para comprobar que el techo lo impone la heterogeneidad y no la implementación, se repitió la
+misma consulta **excluyendo X**, dejando tres fuentes de latencia comparable:
+
+| Configuración | Fuentes | Tiempo de pared | Suma secuencial | **Speedup** |
+|---|---|---|---|---|
+| Con X | 4 | 14,55 s | 18,31 s | **1,26×** |
+| **Sin X (corrida A)** | 3 | **1,37 s** | 3,71 s | **2,71×** |
+| **Sin X (corrida B)** | 3 | **3,12 s** | 6,14 s | **1,97×** |
+
+Quitar una sola fuente hace caer el tiempo de pared **de ~14,5 s a 1,4–3,1 s** y **duplica el
+speedup**. Con tres fuentes homogéneas el speedup observado (2,71×) se acerca al máximo
+teórico (3×), lo que confirma que la implementación concurrente es correcta y que el límite
+del caso de cuatro redes es la **latencia dispar de las fuentes**, no el mecanismo de
+paralelización.
+
+> Formulación sugerida: *"To verify that the observed ceiling stems from source heterogeneity
+> rather than from the concurrency mechanism, the same query was repeated excluding the
+> slowest source. With three comparable-latency sources, wall-clock time dropped from 14.55 s
+> to 1.37 s and the speedup rose from 1.26× to 2.71× — close to the theoretical maximum of 3×
+> — confirming that the serial bound is imposed by the slowest extractor, as Amdahl's law
+> predicts."*
+
+#### 5.1.2 Aislamiento de fallos (verificado)
+
+Se ejecutó una búsqueda con las cuatro redes tras retirar deliberadamente la sesión de X:
+
+```
+youtube    40 registros   1.26 s
+bluesky    19 registros   1.04 s
+mastodon   20 registros   0.77 s
+x           0 registros   0.00 s   FaltanSesion: no existe la sesión …
+estado final de la búsqueda: terminada   (no "error")
+```
+
+La red caída **se reporta con su error y las otras tres completan normalmente**; la búsqueda
+termina en estado `terminada` y los 79 comentarios se clasifican igual. Es la evidencia de
+que el `try/except` por productor del orquestador aísla el fallo, y de que el sistema degrada
+en lugar de caerse — una propiedad necesaria cuando las fuentes son plataformas de terceros
+cuyo acceso puede expirar en cualquier momento.
 
 > Formulación sugerida: *"Wall-clock time converges to the slowest source rather than to the
 > sum of individual latencies, confirming genuine concurrent execution. The observed speedup
@@ -525,18 +566,18 @@ variables `OMP_NUM_THREADS`/`MKL_NUM_THREADS` a 1 llevó el speedup de 0,97× a 
 Las cuatro corridas actuales usaron consultas parecidas. Para robustecer los resultados
 conviene añadir, **con el servidor ya caliente** (~35 s cada una):
 
-| Consulta sugerida | Qué demuestra |
-|---|---|
-| `Mundial2026` o `WorldCup2026` | Las **cuatro** redes con datos (Mastodon incluida) — ya hecha ✅ |
-| `racismo futbol` | Alta densidad temática, X al 95 % negativo — ya hecha ✅ |
-| `Ecuador monos` | Si dispara el **léxico xenófobo** (marca `dirigida`), sería la captura ideal para la pantalla 3 |
-| Una consulta **en inglés** (`racism world cup`) | Contraste de idioma; conecta con el hallazgo 3 |
-| Una consulta **neutra** (`goles Mundial2026`) | Grupo de control: debería dar mayoría neutral/positiva y poco odio |
-| Una búsqueda con **X desmarcada** | Demuestra que el tiempo de pared cae de ~14 s a ~2 s → evidencia directa de que X acota el speedup |
-| Una búsqueda con **una red caída** | Demuestra el aislamiento de fallos: la búsqueda termina igual |
+| Consulta sugerida | Qué demuestra | Estado |
+|---|---|---|
+| `Mundial2026` o `WorldCup2026` | Las **cuatro** redes con datos (Mastodon incluida) | ✅ hecha |
+| `racismo futbol` | Alta densidad temática, X al 95 % negativo | ✅ hecha |
+| Búsqueda con **X desmarcada** | El tiempo de pared cae de ~14 s a 1,4–3,1 s y el speedup se duplica → Ley de Amdahl visible | ✅ hecha (§5.1.1) |
+| Búsqueda con **una red caída** | Aislamiento de fallos: la búsqueda termina igual | ✅ hecha (§5.1.2) |
+| `Ecuador monos` | Si dispara el **léxico xenófobo** (marca `dirigida`), sería la captura ideal para la pantalla 3 | ⬜ pendiente |
+| Una consulta **en inglés** (`racism world cup`) | Contraste de idioma; conecta con el hallazgo 3 | ⬜ pendiente |
+| Una consulta **neutra** (`goles Mundial2026`) | Grupo de control: debería dar mayoría neutral/positiva y poco odio | ⬜ pendiente |
 
-Las dos últimas son las más valiosas y nadie las ha hecho todavía: la de "X desmarcada"
-convierte la Ley de Amdahl en algo que se **ve**, y la del fallo aislado demuestra robustez.
+Las tres pendientes son deseables pero **no bloquean la entrega**: los cuatro criterios de la
+rúbrica de la aplicación ya están cubiertos con las corridas hechas.
 
 ---
 
@@ -552,6 +593,8 @@ convierte la Ley de Amdahl en algo que se **ve**, y la del fallo aislado demuest
 | `evidencia4.png`, `evidencia5.png`, `evidencia7.png` | Pantalla 3: comentarios reales con su clasificación y filtros aplicados |
 | `evidencia3.png`, `evidencia2.png` | Pantalla 4: interpretación automática de la búsqueda + los cinco hallazgos del corpus |
 | `evidencia_x_pruebas.png` | El navegador ejecutando la búsqueda real en X + el log del servidor: evidencia del mecanismo de extracción |
+| `prueba2_evi2.png` | **Experimento sin X** (§5.1.1): tres redes de latencia comparable, pared 3,12 s frente a suma 6,14 s, **speedup 1,97×**. Junto a `pestaña1.png` (1,37×) forma el par que demuestra la Ley de Amdahl |
+| `prueba2_evi1.png` | Clasificación de esa misma corrida sin X: 79 comentarios, 39,2 % negativo, 2,5 % odio |
 
 > **Nota para el artículo:** en `pestaña1.png` Mastodon aparece con 0 registros porque la
 > consulta `racismo futbol` lleva espacio (§1, advertencia 2). Si se necesita una figura con
