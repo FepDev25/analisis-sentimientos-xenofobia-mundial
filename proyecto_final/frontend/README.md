@@ -85,12 +85,59 @@ frontend/
 
 ## Decisiones
 
-**Sin framework ni compilación.** El proyecto se entrega y se defiende en una sola sesión:
-un `npm install` añade un punto de fallo (versiones, red, build) sin aportar nada que estas
-cuatro pantallas necesiten. Se abre el archivo y funciona.
+### Por qué HTML y JavaScript planos, sin framework
 
-**Chart.js con copia local.** Un CDN implica que la demo depende de que haya internet en el
-aula. La librería vive en `vendor/`.
+No es una simplificación por falta de tiempo: es que **ninguna de las razones por las que
+existe un framework aplica a esta interfaz**.
+
+React, Vue o Angular resuelven tres problemas concretos: sincronizar estado complejo entre
+muchos componentes, reutilizar componentes en aplicaciones grandes, y evitar redibujar el
+DOM entero en interfaces que cambian constantemente. Aquí:
+
+- **El estado es uno solo y cambia una vez por búsqueda.** Todas las vistas leen del mismo
+  objeto (`Estado`) y se redibujan cuando cambia. Eso son 8 líneas de código, no una
+  librería de 40 KB con su propio modelo mental.
+- **Son cuatro pantallas fijas**, no un catálogo de componentes reutilizables.
+- **El volumen es pequeño**: ≤ 160 registros por búsqueda. Redibujar la tabla entera cuesta
+  milisegundos; la optimización que ofrece un DOM virtual no tiene nada que optimizar.
+
+A cambio, un framework habría traído costos reales para este proyecto:
+
+- Un paso de compilación (`npm install`, `npm run build`) que es un punto de fallo más
+  justo antes de una entrega, y que depende de descargar cientos de paquetes.
+- Código que **no se puede leer directamente**: lo que se entrega compilado no se parece a
+  lo que se escribió, lo que dificulta explicarlo y defenderlo.
+- Un tamaño desproporcionado respecto a lo que hace la interfaz.
+
+El resultado es que **el frontend completo son ocho archivos que se pueden leer de arriba a
+abajo**, y que funcionan abriendo `index.html` sin instalar absolutamente nada. Para un
+proyecto que hay que explicar, revisar y defender, esa transparencia vale más que las
+comodidades de un framework.
+
+**Chart.js con copia local.** Es la única dependencia, y está vendorizada en `vendor/`.
+Un CDN implicaría que la demo depende de que haya internet en el aula.
+
+### Por qué no se despliega en un servidor
+
+La aplicación **corre en local a propósito**, y no por falta de recursos. Hay tres razones,
+en orden de peso:
+
+1. **El modelo de clasificación vive en memoria del servidor.** Cada proceso del pool carga
+   ~4 GB de `pysentimiento`, y el pool se mantiene caliente mientras viva el proceso. Los
+   planes gratuitos de hosting (Render: 512 MB; Fly.io: 256 MB; Firebase Hosting: solo
+   archivos estáticos, no ejecuta Python) están **uno o dos órdenes de magnitud por debajo**
+   de lo que el sistema necesita. No es un problema de configuración: no cabe.
+2. **Una de las fuentes exige una sesión de navegador real.** X se lee con las cookies de
+   una sesión iniciada manualmente, que caduca y ocasionalmente pide un captcha resuelto por
+   una persona. Eso no puede vivir en un servidor sin intervención humana.
+3. **La inferencia local es una decisión metodológica, no un parche.** El corpus es discurso
+   de odio recolectado de personas reales: procesarlo en la máquina evita enviarlo a un
+   tercero, no genera costo por token, y hace el experimento reproducible sin depender de que
+   un servicio externo siga existiendo o mantenga sus precios.
+
+La rúbrica pide *"una aplicación web"*, es decir que la interfaz sea web y corra en el
+navegador — no que esté publicada en internet. El sistema se demuestra ejecutándolo, y el
+procedimiento completo está documentado en este README para que cualquiera lo reproduzca.
 
 **Los filtros se aplican en el navegador.** Una búsqueda en vivo trae como máximo 40
 registros por red (tope del backend), así que el conjunto completo cabe en memoria. Filtrar
