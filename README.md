@@ -6,11 +6,11 @@ El trabajo se divide en tres entregas encadenadas sobre un mismo hilo conductor:
 
 | Entrega | Objetivo | Estado |
 |---|---|---|
-| Práctica 6 | Extracción **concurrente** de datos desde al menos tres redes sociales. | Implementada |
-| Práctica 7 | **Análisis de sentimientos paralelo** y detección de xenofobia sobre el dataset. | Implementada |
-| Proyecto final | Aplicación web con visualización, storytelling y artículo académico. | Pendiente |
+| Práctica 6 | Extracción **concurrente** de datos desde al menos tres redes sociales. | Terminada |
+| Práctica 7 | **Análisis de sentimientos paralelo** y detección de xenofobia sobre el dataset. | Terminada |
+| Proyecto final | Aplicación web (extracción en vivo, clasificación, exploración y storytelling) + artículo académico. | Terminado |
 
-Cada práctica tiene su propio README con el detalle: [`practica_06/README.md`](practica_06/README.md) y [`practica_07/README.md`](practica_07/README.md).
+Cada entrega tiene su propio README con el detalle: [`practica_06/README.md`](practica_06/README.md), [`practica_07/README.md`](practica_07/README.md) y [`proyecto_final/README.md`](proyecto_final/README.md).
 
 ## Problemática
 
@@ -50,6 +50,14 @@ Toma el dataset de la Práctica 6, lo cura, y clasifica cada texto en positivo /
 
 Resultados sobre el núcleo dirigido (8.783 comentarios): 56 por ciento negativo, X como la red más hostil, el español como el idioma más agresivo, y la constatación de que el modelo subdetecta el odio implícito (leet, emojis, juegos de palabras). Aceleración medida: **speedup 2.61x** (serial vs. paralelo). El informe técnico completo, con figuras, está en [`practica_07/informe/INFORME_P7.md`](practica_07/informe/INFORME_P7.md).
 
+## Proyecto final — Aplicación web + artículo
+
+Une las dos prácticas en un flujo interactivo: el usuario escribe una consulta, la plataforma extrae comentarios en vivo desde **cuatro redes en paralelo** (Bluesky, X, YouTube por Data API, Mastodon), los clasifica con el pool de procesos de la Práctica 7 y presenta los resultados en cuatro pantallas (búsqueda concurrente, clasificación global y por red, explorador filtrable y storytelling).
+
+El backend es FastAPI + SQLite (Python 3.12) y reutiliza el orquestador de hilos de la Práctica 6; el frontend es HTML y JavaScript plano que consume la API por HTTP. La misma dualidad de paralelismo se conserva: hilos para extraer, procesos para clasificar. El detalle de arranque y las decisiones de arquitectura están en [`proyecto_final/README.md`](proyecto_final/README.md).
+
+El artículo académico (inglés, plantilla Springer) que documenta la plataforma está en [`paper/`](paper/).
+
 ## Estructura
 
 ```text
@@ -61,10 +69,14 @@ Resultados sobre el núcleo dirigido (8.783 comentarios): 56 por ciento negativo
 │   ├── config/              # Términos de búsqueda y léxico xenófobo
 │   ├── src/                 # Extractores, orquestador y almacenamiento
 │   └── evidencia/           # Logs de ejecución para la entrega
-└── practica_07/             # Análisis de sentimientos paralelo (procesos)
-    ├── curacion_datos.ipynb
-    ├── analisis_sentimiento.ipynb
-    └── informe/             # Informe técnico + figuras
+├── practica_07/             # Análisis de sentimientos paralelo (procesos)
+│   ├── curacion_datos.ipynb
+│   ├── analisis_sentimiento.ipynb
+│   └── informe/             # Informe técnico + figuras
+├── proyecto_final/          # Aplicación web (etapa 3)
+│   ├── backend/             # API FastAPI + extracción concurrente + pool de sentimiento
+│   └── frontend/            # Interfaz web (HTML + JS, sin framework)
+└── paper/                   # Artículo académico (inglés, plantilla Springer)
 ```
 
 ## Inicio rápido
@@ -84,4 +96,11 @@ cd ../practica_07
 uv python install 3.12
 uv sync --python 3.12
 uv run jupyter nbconvert --to notebook --execute --inplace analisis_sentimiento.ipynb
+
+# Proyecto final — aplicación web (backend + frontend)
+cd ../proyecto_final/backend
+uv sync
+cp .env.example .env                          # credenciales (Bluesky, YOUTUBE_API_KEY)
+uv run uvicorn plataforma.main:app --reload   # API en http://127.0.0.1:8000
+cd ../frontend && python3 -m http.server 5173 # interfaz en http://127.0.0.1:5173
 ```
